@@ -31,7 +31,7 @@ class BertConfig(object):
   """Configuration for `BertModel`."""
 
   def __init__(self,
-               vocab_size,
+               vocab_size=30522,
                hidden_size=768,
                num_hidden_layers=12,
                num_attention_heads=12,
@@ -81,7 +81,7 @@ class BertConfig(object):
   @classmethod
   def from_dict(cls, json_object):
     """Constructs a `BertConfig` from a Python dictionary of parameters."""
-    config = BertConfig(vocab_size=None)
+    config = BertConfig(vocab_size=30522)
     for (key, value) in six.iteritems(json_object):
       config.__dict__[key] = value
     return config
@@ -379,7 +379,7 @@ def create_initializer(initializer_range=0.02):
 
 
 def embedding_lookup(input_ids,
-                     vocab_size,
+                     vocab_size=30522,
                      embedding_size=128,
                      initializer_range=0.02,
                      word_embedding_name="word_embeddings",
