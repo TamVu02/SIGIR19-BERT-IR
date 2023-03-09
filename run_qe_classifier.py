@@ -212,7 +212,7 @@ class DataProcessor(object):
     @classmethod
     def _read_tsv(cls, input_file, quotechar=None):
         """Reads a tab separated value file."""
-        with tf.gfile.Open(input_file, "r") as f:
+        with tf.io.gfile.GFile(input_file, "r") as f:
             reader = csv.reader(f, delimiter="\t", quotechar=quotechar)
             lines = []
             for line in reader:
@@ -232,8 +232,8 @@ class RobustProcessor(DataProcessor):
 
         self.train_folds = [(self.fold + i) % self.n_folds + 1 for i in range(self.n_folds - 1)]
         self.test_folds = (self.fold + self.n_folds - 1) % self.n_folds + 1
-        tf.logging.info("Train Folds: {}".format(str(self.train_folds)))
-        tf.logging.info("Test Fold: {}".format(str(self.test_folds)))
+        tf.compat.v1.logging.info("Train Folds: {}".format(str(self.train_folds)))
+        tf.compat.v1.logging.info("Test Fold: {}".format(str(self.test_folds)))
 
     def get_train_examples(self, data_dir):
         examples = []
@@ -241,7 +241,7 @@ class RobustProcessor(DataProcessor):
         qrel_file = open(os.path.join(data_dir, "qrels"))
         qrels = self._read_qrel(qrel_file)
         q_fields = FLAGS.query_field.split(' ')
-        tf.logging.info("Using query fields {}".format(' '.join(q_fields)))
+        tf.compat.v1.logging.info("Using query fields {}".format(' '.join(q_fields)))
 
         for file_name in train_files:
             train_file = open(os.path.join(data_dir, file_name))
@@ -274,7 +274,7 @@ class RobustProcessor(DataProcessor):
         qrel_file = open(os.path.join(data_dir, "qrels"))
         qrels = self._read_qrel(qrel_file)
         q_fields = FLAGS.query_field.split(' ')
-        tf.logging.info("Using query fields {}".format(' '.join(q_fields)))
+        tf.compat.v1.logging.info("Using query fields {}".format(' '.join(q_fields)))
 
         for i, line in enumerate(dev_file):
             items = line.strip().split('#')
@@ -319,12 +319,12 @@ class ClueWebProcessor(DataProcessor):
         self.n_folds = 5
         self.fold = FLAGS.fold
         self.query_fields = FLAGS.query_field.split(' ')
-        tf.logging.info("Using query fields {}".format(' '.join(self.q_fields)))
+        tf.compat.v1.logging.info("Using query fields {}".format(' '.join(self.q_fields)))
 
         self.train_folds = [(self.fold + i) % self.n_folds + 1 for i in range(self.n_folds - 1)]
         self.test_folds = (self.fold + self.n_folds - 1) % self.n_folds + 1
-        tf.logging.info("Train Folds: {}".format(str(self.train_folds)))
-        tf.logging.info("Test Fold: {}".format(str(self.test_folds)))
+        tf.compat.v1.logging.info("Train Folds: {}".format(str(self.train_folds)))
+        tf.compat.v1.logging.info("Test Fold: {}".format(str(self.test_folds)))
 
     def get_train_examples(self, data_dir):
         examples = []
@@ -332,11 +332,11 @@ class ClueWebProcessor(DataProcessor):
 
         qrel_file = open(os.path.join(data_dir, "qrels"))
         qrels = self._read_qrel(qrel_file)
-        tf.logging.info("Qrel size: {}".format(len(qrels)))
+        tf.compat.v1.logging.info("Qrel size: {}".format(len(qrels)))
 
         query_file = open(os.path.join(data_dir, "queries.json"))
         qid2queries = self._read_queries(query_file)
-        tf.logging.info("Loaded {} queries. Example: {}".format(len(qid2queries), list(qid2queries.values())[0]))
+        tf.compat.v1.logging.info("Loaded {} queries. Example: {}".format(len(qid2queries), list(qid2queries.values())[0]))
 
         for file_name in train_files:
             train_file = open(os.path.join(data_dir, file_name))
@@ -375,11 +375,11 @@ class ClueWebProcessor(DataProcessor):
         dev_file = open(os.path.join(data_dir, "{}.trec.with_json".format(self.test_folds)))
         qrel_file = open(os.path.join(data_dir, "qrels"))
         qrels = self._read_qrel(qrel_file)
-        tf.logging.info("Qrel size: {}".format(len(qrels)))
+        tf.compat.v1.logging.info("Qrel size: {}".format(len(qrels)))
 
         query_file = open(os.path.join(data_dir, "queries.json"))
         qid2queries = self._read_queries(query_file)
-        tf.logging.info("Loaded {} queries. Example: {}".format(len(qid2queries), list(qid2queries.values())[0]))
+        tf.compat.v1.logging.info("Loaded {} queries. Example: {}".format(len(qid2queries), list(qid2queries.values())[0]))
 
         for i, line in enumerate(dev_file):
             items = line.strip().split('#')
@@ -437,27 +437,27 @@ class RobustPassageProcessor(DataProcessor):
         self.n_folds = 5
         self.fold = FLAGS.fold
         self.q_fields = FLAGS.query_field.split(' ')
-        tf.logging.info("Using query fields {}".format(' '.join(self.q_fields)))
+        tf.compat.v1.logging.info("Using query fields {}".format(' '.join(self.q_fields)))
 
         self.train_folds = [(self.fold + i) % self.n_folds + 1 for i in range(self.n_folds - 1)]
         self.test_folds = (self.fold + self.n_folds - 1) % self.n_folds + 1
-        tf.logging.info("Train Folds: {}".format(str(self.train_folds)))
-        tf.logging.info("Test Fold: {}".format(str(self.test_folds)))
+        tf.compat.v1.logging.info("Train Folds: {}".format(str(self.train_folds)))
+        tf.compat.v1.logging.info("Test Fold: {}".format(str(self.test_folds)))
 
     def get_train_examples(self, data_dir):
         examples = []
         train_files = ["{}.trec.with_json".format(i) for i in self.train_folds]
 
-        qrel_file = tf.gfile.Open(os.path.join(data_dir, "qrels"))
+        qrel_file = tf.io.gfile.GFilen(os.path.join(data_dir, "qrels"))
         qrels = self._read_qrel(qrel_file)
-        tf.logging.info("Qrel size: {}".format(len(qrels)))
+        tf.compat.v1.logging.info("Qrel size: {}".format(len(qrels)))
 
-        query_file = tf.gfile.Open(os.path.join(data_dir, "queries.json"))
+        query_file = tf.io.gfile.GFile(os.path.join(data_dir, "queries.json"))
         qid2queries = self._read_queries(query_file)
-        tf.logging.info("Loaded {} queries.".format(len(qid2queries)))
+        tf.compat.v1.logging.info("Loaded {} queries.".format(len(qid2queries)))
 
         for file_name in train_files:
-            train_file = tf.gfile.Open(os.path.join(data_dir, file_name))
+            train_file = tf.io.gfile.GFile(os.path.join(data_dir, file_name))
             for i, line in enumerate(train_file):
 
                 items = line.strip().split('#')
@@ -495,14 +495,14 @@ class RobustPassageProcessor(DataProcessor):
 
     def get_test_examples(self, data_dir):
         examples = []
-        dev_file = tf.gfile.Open(os.path.join(data_dir, "{}.trec.with_json".format(self.test_folds)))
-        qrel_file = tf.gfile.Open(os.path.join(data_dir, "qrels"))
+        dev_file = tf.io.gfile.GFilen(os.path.join(data_dir, "{}.trec.with_json".format(self.test_folds)))
+        qrel_file = tf.io.gfile.GFile(os.path.join(data_dir, "qrels"))
         qrels = self._read_qrel(qrel_file)
-        tf.logging.info("Qrel size: {}".format(len(qrels)))
+        tf.compat.v1.logging.info("Qrel size: {}".format(len(qrels)))
 
-        query_file = tf.gfile.Open(os.path.join(data_dir, "queries.json"))
+        query_file = tf.io.gfile.GFile(os.path.join(data_dir, "queries.json"))
         qid2queries = self._read_queries(query_file)
-        tf.logging.info("Loaded {} queries.".format(len(qid2queries)))
+        tf.compat.v1.logging.info("Loaded {} queries.".format(len(qid2queries)))
 
         for i, line in enumerate(dev_file):
             items = line.strip().split('#')
@@ -545,7 +545,7 @@ class RobustPassageProcessor(DataProcessor):
             qid = json_dict['qid']
             qid2queries[qid] = json_dict
             if i < 3:
-                tf.logging.info("Example Q: {}".format(json_dict))
+                tf.compat.v1.logging.info("Example Q: {}".format(json_dict))
         return qid2queries
 
     def get_labels(self):
@@ -560,27 +560,27 @@ class ClueWebPassageProcessor(DataProcessor):
         self.n_folds = 5
         self.fold = FLAGS.fold
         self.q_fields = FLAGS.query_field.split(' ')
-        tf.logging.info("Using query fields {}".format(' '.join(self.q_fields)))
+        tf.compat.v1.logging.info("Using query fields {}".format(' '.join(self.q_fields)))
 
         self.train_folds = [(self.fold + i) % self.n_folds + 1 for i in range(self.n_folds - 1)]
         self.test_folds = (self.fold + self.n_folds - 1) % self.n_folds + 1
-        tf.logging.info("Train Folds: {}".format(str(self.train_folds)))
-        tf.logging.info("Test Fold: {}".format(str(self.test_folds)))
+        tf.compat.v1.logging.info("Train Folds: {}".format(str(self.train_folds)))
+        tf.compat.v1.logging.info("Test Fold: {}".format(str(self.test_folds)))
 
     def get_train_examples(self, data_dir):
         examples = []
         train_files = ["{}.trec.with_json".format(i) for i in self.train_folds]
 
-        qrel_file = tf.gfile.Open(os.path.join(data_dir, "qrels"))
+        qrel_file = tf.io.gfile.GFile(os.path.join(data_dir, "qrels"))
         qrels = self._read_qrel(qrel_file)
-        tf.logging.info("Qrel size: {}".format(len(qrels)))
+        tf.compat.v1.logging.info("Qrel size: {}".format(len(qrels)))
 
-        query_file = tf.gfile.Open(os.path.join(data_dir, "queries.json"))
+        query_file = tf.io.gfile.GFile(os.path.join(data_dir, "queries.json"))
         qid2queries = self._read_queries(query_file)
-        tf.logging.info("Loaded {} queries.".format(len(qid2queries)))
+        tf.compat.v1.logging.info("Loaded {} queries.".format(len(qid2queries)))
 
         for file_name in train_files:
-            train_file = tf.gfile.Open(os.path.join(data_dir, file_name))
+            train_file = tf.io.gfile.GFile(os.path.join(data_dir, file_name))
             for i, line in enumerate(train_file):
                 items = line.strip().split('#')
                 trec_line = items[0]
@@ -623,14 +623,14 @@ class ClueWebPassageProcessor(DataProcessor):
 
     def get_test_examples(self, data_dir):
         examples = []
-        dev_file = tf.gfile.Open(os.path.join(data_dir, "{}.trec.with_json".format(self.test_folds)))
-        qrel_file = tf.gfile.Open(os.path.join(data_dir, "qrels"))
+        dev_file = tf.io.gfile.GFile(os.path.join(data_dir, "{}.trec.with_json".format(self.test_folds)))
+        qrel_file = tf.io.gfile.GFile(os.path.join(data_dir, "qrels"))
         qrels = self._read_qrel(qrel_file)
-        tf.logging.info("Qrel size: {}".format(len(qrels)))
+        tf.compat.v1.logging.info("Qrel size: {}".format(len(qrels)))
 
-        query_file = tf.gfile.Open(os.path.join(data_dir, "queries.json"))
+        query_file = tf.io.gfile.GFile(os.path.join(data_dir, "queries.json"))
         qid2queries = self._read_queries(query_file)
-        tf.logging.info("Loaded {} queries.".format(len(qid2queries)))
+        tf.compat.v1.logging.info("Loaded {} queries.".format(len(qid2queries)))
 
         for i, line in enumerate(dev_file):
             items = line.strip().split('#')
@@ -676,7 +676,7 @@ class ClueWebPassageProcessor(DataProcessor):
             json_dict['subtopics'] = ' '.join(json_dict['subtopics'])
             qid2queries[qid] = json_dict
             if i < 3:
-                tf.logging.info("Example Q: {}".format(json_dict))
+                tf.compat.v1.logging.info("Example Q: {}".format(json_dict))
         return qid2queries
 
     def get_labels(self):
@@ -773,14 +773,14 @@ def convert_single_example(ex_index, example, label_list, max_seq_length,
 
     label_id = label_map[example.label]
     if ex_index < 5:
-        tf.logging.info("*** Example ***")
-        tf.logging.info("guid: %s" % (example.guid))
-        tf.logging.info("tokens: %s" % " ".join(
+        tf.compat.v1.logging.info("*** Example ***")
+        tf.compat.v1.logging.info("guid: %s" % (example.guid))
+        tf.compat.v1.logging.info("tokens: %s" % " ".join(
             [tokenization.printable_text(x) for x in tokens]))
-        tf.logging.info("input_ids: %s" % " ".join([str(x) for x in input_ids]))
-        tf.logging.info("input_mask: %s" % " ".join([str(x) for x in input_mask]))
-        tf.logging.info("segment_ids: %s" % " ".join([str(x) for x in segment_ids]))
-        tf.logging.info("label: %s (id = %d)" % (example.label, label_id))
+        tf.compat.v1.logging.info("input_ids: %s" % " ".join([str(x) for x in input_ids]))
+        tf.compat.v1.logging.info("input_mask: %s" % " ".join([str(x) for x in input_mask]))
+        tf.compat.v1.logging.info("segment_ids: %s" % " ".join([str(x) for x in segment_ids]))
+        tf.compat.v1.logging.info("label: %s (id = %d)" % (example.label, label_id))
 
     feature = InputFeatures(
         input_ids=input_ids,
@@ -799,7 +799,7 @@ def file_based_convert_examples_to_features(
 
     for (ex_index, example) in enumerate(examples):
         if ex_index % 10000 == 0:
-            tf.logging.info("Writing example %d of %d" % (ex_index, len(examples)))
+            tf.compat.v1.logging.info("Writing example %d of %d" % (ex_index, len(examples)))
 
         feature = convert_single_example(ex_index, example, label_list,
                                          max_seq_length, tokenizer)
@@ -939,9 +939,9 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
     def model_fn(features, labels, mode, params):  # pylint: disable=unused-argument
         """The `model_fn` for TPUEstimator."""
 
-        tf.logging.info("*** Features ***")
+        tf.compat.v1.logging.info("*** Features ***")
         for name in sorted(features.keys()):
-            tf.logging.info("  name = %s, shape = %s" % (name, features[name].shape))
+            tf.compat.v1.logging.info("  name = %s, shape = %s" % (name, features[name].shape))
 
         input_ids = features["input_ids"]
         input_mask = features["input_mask"]
@@ -975,12 +975,12 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
             else:
                 tf.train.init_from_checkpoint(init_checkpoint, assignment_map)
 
-        tf.logging.info("**** Trainable Variables ****")
+        tf.compat.v1.logging.info("**** Trainable Variables ****")
         for var in tvars:
             init_string = ""
             if var.name in initialized_variable_names:
                 init_string = ", *INIT_FROM_CKPT*"
-            tf.logging.info("  name = %s, shape = %s%s", var.name, var.shape,
+            tf.compat.v1.logging.info("  name = %s, shape = %s%s", var.name, var.shape,
                             init_string)
 
         output_spec = None
@@ -1086,7 +1086,7 @@ def convert_examples_to_features(examples, label_list, max_seq_length,
     features = []
     for (ex_index, example) in enumerate(examples):
         if ex_index % 10000 == 0:
-            tf.logging.info("Writing example %d of %d" % (ex_index, len(examples)))
+            tf.compat.v1.logging.info("Writing example %d of %d" % (ex_index, len(examples)))
 
         feature = convert_single_example(ex_index, example, label_list,
                                          max_seq_length, tokenizer)
@@ -1096,7 +1096,7 @@ def convert_examples_to_features(examples, label_list, max_seq_length,
 
 
 def main(_):
-    tf.logging.set_verbosity(tf.logging.INFO)
+    tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.INFO)
 
     processors = {
         "robust": RobustProcessor,
@@ -1120,7 +1120,7 @@ def main(_):
             "was only trained up to sequence length %d" %
             (FLAGS.max_seq_length, bert_config.max_position_embeddings))
 
-    tf.gfile.MakeDirs(FLAGS.output_dir)
+    tf.io.gfile.MakeDirs(FLAGS.output_dir)
 
     task_name = FLAGS.task_name.lower()
 
@@ -1183,10 +1183,10 @@ def main(_):
         predict_batch_size=FLAGS.predict_batch_size)
 
     if FLAGS.do_train:
-        tf.logging.info("***** Running training *****")
-        tf.logging.info("  Num examples = %d", len(train_examples))
-        tf.logging.info("  Batch size = %d", FLAGS.train_batch_size)
-        tf.logging.info("  Num steps = %d", num_train_steps)
+        tf.compat.v1.logging.info("***** Running training *****")
+        tf.compat.v1.logging.info("  Num examples = %d", len(train_examples))
+        tf.compat.v1.logging.info("  Batch size = %d", FLAGS.train_batch_size)
+        tf.compat.v1.logging.info("  Num steps = %d", num_train_steps)
         train_input_fn = file_based_input_fn_builder(
             input_file=train_file,
             seq_length=FLAGS.max_seq_length,
@@ -1210,11 +1210,11 @@ def main(_):
                                                 FLAGS.max_seq_length, tokenizer,
                                                 predict_file)
 
-        tf.logging.info("***** Running prediction*****")
-        tf.logging.info("  Num examples = %d (%d actual, %d padding)",
+        tf.compat.v1.logging.info("***** Running prediction*****")
+        tf.compat.v1.logging.info("  Num examples = %d (%d actual, %d padding)",
                         len(predict_examples), num_actual_predict_examples,
                         len(predict_examples) - num_actual_predict_examples)
-        tf.logging.info("  Batch size = %d", FLAGS.predict_batch_size)
+        tf.compat.v1.logging.info("  Batch size = %d", FLAGS.predict_batch_size)
 
         predict_drop_remainder = True if FLAGS.use_tpu else False
         predict_input_fn = file_based_input_fn_builder(
@@ -1226,9 +1226,9 @@ def main(_):
         result = estimator.predict(input_fn=predict_input_fn)
 
         output_predict_file = os.path.join(FLAGS.output_dir, "test_results.tsv")
-        with tf.gfile.GFile(output_predict_file, "w") as writer:
+        with tf.io.gfile.GFile(output_predict_file, "w") as writer:
             num_written_lines = 0
-            tf.logging.info("***** Predict results *****")
+            tf.compat.v1.logging.info("***** Predict results *****")
             for (i, prediction) in enumerate(result):
                 probabilities = prediction["probabilities"]
                 if i >= num_actual_predict_examples:
