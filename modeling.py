@@ -410,7 +410,8 @@ def embedding_lookup(input_ids,
 
   embedding_table =tf.Variable(
       name=word_embedding_name,
-      shape=[vocab_size, embedding_size],
+      #shape=[vocab_size, embedding_size],
+      shape=[30522, 128],
       initial_value=create_initializer(initializer_range))
 
   if use_one_hot_embeddings:
@@ -423,7 +424,7 @@ def embedding_lookup(input_ids,
   input_shape = get_shape_list(input_ids)
 
   output = tf.reshape(output,
-                      input_shape[0:-1] + [input_shape[-1] * embedding_size])
+                      input_shape[0:-1] + [input_shape[-1] * 128])
   return (output, embedding_table)
 
 
