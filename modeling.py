@@ -408,7 +408,7 @@ def embedding_lookup(input_ids,
   if input_ids.shape.ndims == 2:
     input_ids = tf.expand_dims(input_ids, axis=[-1])
 
-  embedding_table = tf.get_variable(
+  embedding_table =tf.Variable(
       name=word_embedding_name,
       shape=[vocab_size, embedding_size],
       initializer=create_initializer(initializer_range))
@@ -475,7 +475,7 @@ def embedding_postprocessor(input_tensor,
     if token_type_ids is None:
       raise ValueError("`token_type_ids` must be specified if"
                        "`use_token_type` is True.")
-    token_type_table = tf.get_variable(
+    token_type_table = tf.Variable(
         name=token_type_embedding_name,
         shape=[token_type_vocab_size, width],
         initializer=create_initializer(initializer_range))
@@ -491,7 +491,7 @@ def embedding_postprocessor(input_tensor,
   if use_position_embeddings:
     assert_op = tf.assert_less_equal(seq_length, max_position_embeddings)
     with tf.control_dependencies([assert_op]):
-      full_position_embeddings = tf.get_variable(
+      full_position_embeddings = tf.Variable(
           name=position_embedding_name,
           shape=[max_position_embeddings, width],
           initializer=create_initializer(initializer_range))
