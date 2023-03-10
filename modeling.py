@@ -340,7 +340,8 @@ def get_assignment_map_from_checkpoint(tvars, init_checkpoint):
     assignment_map[name] = name
     initialized_variable_names[name] = 1
     initialized_variable_names[name + ":0"] = 1
-
+  print(assignment_map)
+  print(initialized_variable_names)
   return (assignment_map, initialized_variable_names)
 
 
