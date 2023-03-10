@@ -407,9 +407,9 @@ def embedding_lookup(input_ids,
   # reshape to [batch_size, seq_length, 1].
   if input_ids.shape.ndims == 2:
     input_ids = tf.expand_dims(input_ids, axis=[-1])
-  print([vocab_size, embedding_size])
+  #print([vocab_size, embedding_size])
   embedding_table =tf.Variable(
-    shape = [vocab_size, embedding_size],
+    shape = (vocab_size, embedding_size),
     name=word_embedding_name,
     #shape=[vocab_size, embedding_size], #[30522, 128]
     initial_value=create_initializer(initializer_range))
@@ -478,7 +478,7 @@ def embedding_postprocessor(input_tensor,
                        "`use_token_type` is True.")
     token_type_table = tf.Variable(
         name=token_type_embedding_name,
-        shape=[token_type_vocab_size, width],
+        shape=(token_type_vocab_size, width),
         initial_value=create_initializer(initializer_range))
     # This vocab will be small so we always do one-hot here, since it is always
     # faster for a small vocabulary.
@@ -494,7 +494,7 @@ def embedding_postprocessor(input_tensor,
     with tf.control_dependencies([assert_op]):
       full_position_embeddings = tf.Variable(
           name=position_embedding_name,
-          shape=[max_position_embeddings, width],
+          shape=(max_position_embeddings, width),
           initial_value=create_initializer(initializer_range))
       # Since the position embedding table is a learned variable, we create it
       # using a (long) sequence length `max_position_embeddings`. The actual
@@ -550,7 +550,7 @@ def create_attention_mask_from_input_mask(from_tensor, to_mask):
   #
   # `broadcast_ones` = [batch_size, from_seq_length, 1]
   broadcast_ones = tf.ones(
-      shape=[batch_size, from_seq_length, 1], dtype=tf.float32)
+      shape=(batch_size, from_seq_length, 1), dtype=tf.float32)
 
   # Here we broadcast along two dimensions to create the mask.
   mask = broadcast_ones * to_mask
