@@ -27,7 +27,8 @@ def create_optimizer(loss, init_lr, num_train_steps, num_warmup_steps, use_tpu):
   global_step = tf.compat.v1.train.get_or_create_global_step()
   print('Before learning_rate : ',init_lr)
 
-  learning_rate = tf.convert_to_tensor(init_lr,dtype=tf.float32)#(value=init_lr, shape=[], dtype=tf.float32)
+  #learning_rate = tf.convert_to_tensor(init_lr,dtype=tf.float32)#(value=init_lr, shape=[], dtype=tf.float32)
+  learning_rate=init_lr
   print('Current learning_rate : ',learning_rate)
 
   # Implements linear decay of the learning rate.
