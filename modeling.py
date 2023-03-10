@@ -486,8 +486,9 @@ def embedding_postprocessor(input_tensor,
                        "`use_token_type` is True.")
     token_type_table = tf.Variable(
         name=token_type_embedding_name,
-        shape=(token_type_vocab_size, width),
-        initial_value=create_initializer(initializer_range))
+        initial_value=np.zeros((token_type_vocab_size, width)))
+#         shape=(token_type_vocab_size, width),
+#         initial_value=create_initializer(initializer_range))
     # This vocab will be small so we always do one-hot here, since it is always
     # faster for a small vocabulary.
     flat_token_type_ids = tf.reshape(token_type_ids, [-1])
@@ -502,8 +503,9 @@ def embedding_postprocessor(input_tensor,
     with tf.control_dependencies([assert_op]):
       full_position_embeddings = tf.Variable(
           name=position_embedding_name,
-          shape=(max_position_embeddings, width),
-          initial_value=create_initializer(initializer_range))
+          initial_value=np.zeros((max_position_embeddings, width)))
+#           shape=(max_position_embeddings, width),
+#           initial_value=create_initializer(initializer_range))
       # Since the position embedding table is a learned variable, we create it
       # using a (long) sequence length `max_position_embeddings`. The actual
       # sequence length might be shorter than this, for faster training of
