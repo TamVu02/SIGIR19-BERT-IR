@@ -408,13 +408,16 @@ def embedding_lookup(input_ids,
   if input_ids.shape.ndims == 2:
     input_ids = tf.expand_dims(input_ids, axis=[-1])
   #print([vocab_size, embedding_size])
-  embedding_table =tf.Variable(
-    shape = tf.TensorShape([vocab_size, embedding_size]),
-    initial_value=create_initializer(initializer_range),
-    #shape = (vocab_size, embedding_size),
+  embedding_table = tf.Variable(
+    initial_value=create_initializer(initializer_range)(shape=[vocab_size, embedding_size]),
     name=word_embedding_name)
-    #shape=[vocab_size, embedding_size], #[30522, 128]
-    #initial_value=create_initializer(initializer_range))
+#   embedding_table =tf.Variable(
+#     shape = tf.TensorShape([vocab_size, embedding_size]),
+#     initial_value=create_initializer(initializer_range),
+#     #shape = (vocab_size, embedding_size),
+#     name=word_embedding_name)
+#     #shape=[vocab_size, embedding_size], #[30522, 128]
+#     #initial_value=create_initializer(initializer_range))
 
   if use_one_hot_embeddings:
     flat_input_ids = tf.reshape(input_ids, [-1])
