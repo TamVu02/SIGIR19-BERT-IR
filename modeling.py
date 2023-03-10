@@ -409,9 +409,10 @@ def embedding_lookup(input_ids,
     input_ids = tf.expand_dims(input_ids, axis=[-1])
 
   embedding_table =tf.Variable(
-      #name=word_embedding_name,
-      #shape=[vocab_size, embedding_size], #[30522, 128]
-      initial_value=create_initializer(initializer_range))
+    shape=[vocab_size, embedding_size]
+    name=word_embedding_name,
+    #shape=[vocab_size, embedding_size], #[30522, 128]
+    initial_value=create_initializer(initializer_range))
 
   if use_one_hot_embeddings:
     flat_input_ids = tf.reshape(input_ids, [-1])
@@ -478,7 +479,7 @@ def embedding_postprocessor(input_tensor,
     token_type_table = tf.Variable(
         name=token_type_embedding_name,
         shape=[token_type_vocab_size, width],
-        initializer=create_initializer(initializer_range))
+        initial_value=create_initializer(initializer_range))
     # This vocab will be small so we always do one-hot here, since it is always
     # faster for a small vocabulary.
     flat_token_type_ids = tf.reshape(token_type_ids, [-1])
@@ -494,7 +495,7 @@ def embedding_postprocessor(input_tensor,
       full_position_embeddings = tf.Variable(
           name=position_embedding_name,
           shape=[max_position_embeddings, width],
-          initializer=create_initializer(initializer_range))
+          initial_value=create_initializer(initializer_range))
       # Since the position embedding table is a learned variable, we create it
       # using a (long) sequence length `max_position_embeddings`. The actual
       # sequence length might be shorter than this, for faster training of
