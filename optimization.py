@@ -88,7 +88,7 @@ class AdamWeightDecayOptimizer(tf.keras.optimizers.Optimizer):
   """A basic Adam optimizer that includes "correct" L2 weight decay."""
 
   def __init__(self,
-               learning_rate,
+               learning_rate=0.001,
                weight_decay_rate=0.0,
                beta_1=0.9,
                beta_2=0.999,
