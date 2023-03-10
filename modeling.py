@@ -674,6 +674,10 @@ def attention_layer(from_tensor,
 
   from_tensor_2d = reshape_to_matrix(from_tensor)
   to_tensor_2d = reshape_to_matrix(to_tensor)
+  
+  print(from_tensor_2d.shape)
+  print(to_tensor_2d.shape)
+  print(from_seq_length.shape)
 
   # `query_layer` = [B*F, N*H]
   query_layer = tf.keras.layers.Dense(
@@ -683,6 +687,7 @@ def attention_layer(from_tensor,
       name="query")
       #kernel_initializer=np.zeros(1),dtype=np.float32)
   query_tensor=query_layer(from_tensor_2d)
+  print(query_tensor.shape)
 
   # `key_layer` = [B*T, N*H]
   key_layer = tf.keras.layers.Dense(
