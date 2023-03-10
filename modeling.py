@@ -877,11 +877,11 @@ def transformer_model(input_tensor,
         # Run a linear projection of `hidden_size` then add a residual
         # with `layer_input`.
         with tf.compat.v1.variable_scope("output"):
-          attention_layer = tf.keras.layers.Dense(
+          att_layer = tf.keras.layers.Dense(
               #attention_output)
               units=hidden_size)
               #kernel_initializer=create_initializer(initializer_range))
-          attention_output=attention_layer(attention_output)
+          attention_output=att_layer(attention_output)
           attention_output = dropout(attention_output, hidden_dropout_prob)
           attention_output = layer_norm(attention_output + layer_input)
 
