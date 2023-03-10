@@ -971,7 +971,7 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
                 print(tf.train.list_variables(init_checkpoint))
 
                 def tpu_scaffold():
-                    tf.compat.v1.train.init_from_checkpoint(init_checkpoint, assignment_map)
+                    #tf.compat.v1.train.init_from_checkpoint(init_checkpoint, assignment_map)
                     return tf.compat.v1.train.Scaffold()
 
                 scaffold_fn = tpu_scaffold
