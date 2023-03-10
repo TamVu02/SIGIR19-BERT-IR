@@ -881,7 +881,7 @@ def transformer_model(input_tensor,
             #attention_output,
             units=intermediate_size)
             #activation=intermediate_act_fn,
-            kernel_initializer=create_initializer(initializer_range))
+            #kernel_initializer=create_initializer(initializer_range))
 
       # Down-project back to `hidden_size` then add the residual.
       with tf.compat.v1.variable_scope("output"):
