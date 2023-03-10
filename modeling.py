@@ -682,6 +682,7 @@ def attention_layer(from_tensor,
       activation=query_act,
       name="query")
       #kernel_initializer=np.zeros(1),dtype=np.float32)
+  query_tensor=query_layer(from_tensor_2d)
 
   # `key_layer` = [B*T, N*H]
   key_layer = tf.keras.layers.Dense(
@@ -690,6 +691,7 @@ def attention_layer(from_tensor,
       activation=key_act,
       name="key")
       #kernel_initializer=create_initializer(initializer_range))
+  key_tensor=key_layer(to_tensor_2d)
 
   # `value_layer` = [B*T, N*H]
   value_layer = tf.keras.layers.Dense(
@@ -698,20 +700,21 @@ def attention_layer(from_tensor,
       activation=value_act,
       name="value")
       #kernel_initializer=create_initializer(initializer_range))
+   value_tensor=value_layer(to_tensor_2d)
 
   # `query_layer` = [B, N, F, H]
-  query_layer = transpose_for_scores(query_layer, batch_size,
+  query_tensor = transpose_for_scores(query_tensor, batch_size,
                                      num_attention_heads, from_seq_length,
                                      size_per_head)
 
   # `key_layer` = [B, N, T, H]
-  key_layer = transpose_for_scores(key_layer, batch_size, num_attention_heads,
+  key_tensor = transpose_for_scores(key_tensor, batch_size, num_attention_heads,
                                    to_seq_length, size_per_head)
 
   # Take the dot product between "query" and "key" to get the raw
   # attention scores.
   # `attention_scores` = [B, N, F, T]
-  attention_scores = tf.matmul(query_layer, key_layer, transpose_b=True)
+  attention_scores = tf.matmul(query_tensor, key_tensor, transpose_b=True)
   attention_scores = tf.multiply(attention_scores,
                                  1.0 / math.sqrt(float(size_per_head)))
 
@@ -737,31 +740,31 @@ def attention_layer(from_tensor,
   attention_probs = dropout(attention_probs, attention_probs_dropout_prob)
 
   # `value_layer` = [B, T, N, H]
-  value_layer = tf.reshape(
-      value_layer,
+  value_tensor = tf.reshape(
+      value_tensor,
       [batch_size, to_seq_length, num_attention_heads, size_per_head])
 
   # `value_layer` = [B, N, T, H]
-  value_layer = tf.transpose(value_layer, [0, 2, 1, 3])
+  value_tensor = tf.transpose(value_tensor, [0, 2, 1, 3])
 
   # `context_layer` = [B, N, F, H]
-  context_layer = tf.matmul(attention_probs, value_layer)
+  context_tensor = tf.matmul(attention_probs, value_tensor)
 
   # `context_layer` = [B, F, N, H]
-  context_layer = tf.transpose(context_layer, [0, 2, 1, 3])
+  context_tensor = tf.transpose(context_tensor, [0, 2, 1, 3])
 
   if do_return_2d_tensor:
     # `context_layer` = [B*F, N*H]
-    context_layer = tf.reshape(
-        context_layer,
+    context_tensor = tf.reshape(
+        context_tensor,
         [batch_size * from_seq_length, num_attention_heads * size_per_head])
   else:
     # `context_layer` = [B, F, N*H]
-    context_layer = tf.reshape(
-        context_layer,
+    context_tensor = tf.reshape(
+        context_tensor,
         [batch_size, from_seq_length, num_attention_heads * size_per_head])
 
-  return context_layer
+  return context_tensor
 
 
 def transformer_model(input_tensor,
