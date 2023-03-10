@@ -59,13 +59,19 @@ def create_optimizer(loss, init_lr, num_train_steps, num_warmup_steps, use_tpu):
   # is how the model was trained (note that the Adam m/v variables are NOT
   # loaded from init_checkpoint.)
   print('Current learning_rate : ',learning_rate)
-  optimizer = AdamWeightDecayOptimizer(
-      learning_rate=learning_rate,
-      weight_decay_rate=0.01,
-      beta_1=0.9,
-      beta_2=0.999,
-      epsilon=1e-6,
-      exclude_from_weight_decay=["LayerNorm", "layer_norm", "bias"])
+  optimizer=tf.keras.optimizers.Adam(
+    learning_rate=learning_rate,
+    beta_1=0.9,
+    beta_2=0.999,
+    epsilon=1e-06,
+  )
+#   optimizer = AdamWeightDecayOptimizer(
+#       learning_rate=learning_rate,
+#       weight_decay_rate=0.01,
+#       beta_1=0.9,
+#       beta_2=0.999,
+#       epsilon=1e-6,
+#       exclude_from_weight_decay=["LayerNorm", "layer_norm", "bias"])
 
   if use_tpu:
     optimizer = tf.compat.v1.tpu.CrossShardOptimizer(optimizer)
