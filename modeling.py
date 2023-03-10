@@ -411,7 +411,7 @@ def embedding_lookup(input_ids,
   embedding_table =tf.Variable(
     initial_value=create_initializer(initializer_range),
     #shape = (vocab_size, embedding_size),
-    shape =(vocab_size, embedding_size),
+    shape =tf.TensorShape([vocab_size, embedding_size]),
     name=word_embedding_name)
     #shape=[vocab_size, embedding_size], #[30522, 128]
     #initial_value=create_initializer(initializer_range))
