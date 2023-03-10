@@ -961,7 +961,7 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
             bert_config, is_training, input_ids, input_mask, segment_ids, label_ids,
             num_labels, use_one_hot_embeddings)
 
-        tvars = tf.trainable_variables()
+        tvars = tf.compat.v1.trainable_variables()
         initialized_variable_names = {}
         scaffold_fn = None
         if init_checkpoint:
