@@ -970,12 +970,12 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
             if use_tpu:
 
                 def tpu_scaffold():
-                    tf.train.init_from_checkpoint(init_checkpoint, assignment_map)
-                    return tf.train.Scaffold()
+                    tf.compat.v1.train.init_from_checkpoint(init_checkpoint, assignment_map)
+                    return tf.compat.v1.train.Scaffold
 
                 scaffold_fn = tpu_scaffold
             else:
-                tf.train.init_from_checkpoint(init_checkpoint, assignment_map)
+                tf.compat.v1.train.init_from_checkpoint(init_checkpoint, assignment_map)
 
         tf.compat.v1.logging.info("**** Trainable Variables ****")
         for var in tvars:
@@ -1000,9 +1000,9 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
 
             def metric_fn(per_example_loss, label_ids, logits, is_real_example):
                 predictions = tf.argmax(logits, axis=-1, output_type=tf.int32)
-                accuracy = tf.metrics.accuracy(
+                accuracy = tf.compat.v1.metrics.accuracy(
                     labels=label_ids, predictions=predictions, weights=is_real_example)
-                loss = tf.metrics.mean(values=per_example_loss, weights=is_real_example)
+                loss = tf.compat.v1.metrics.mean(values=per_example_loss, weights=is_real_example)
                 return {
                     "eval_accuracy": accuracy,
                     "eval_loss": loss,
