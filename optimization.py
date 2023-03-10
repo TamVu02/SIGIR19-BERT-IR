@@ -98,12 +98,12 @@ class AdamWeightDecayOptimizer(tf.keras.optimizers.Optimizer):
     """Constructs a AdamWeightDecayOptimizer."""
     super(AdamWeightDecayOptimizer, self).__init__(False, name)
 
-    self.learning_rate = learning_rate
-    self.weight_decay_rate = weight_decay_rate
-    self.beta_1 = beta_1
-    self.beta_2 = beta_2
-    self.epsilon = epsilon
-    self.exclude_from_weight_decay = exclude_from_weight_decay
+    self.learning_rate = 0.001
+    self.weight_decay_rate = 0.0
+    self.beta_1 = 0.9
+    self.beta_2 = 0.999
+    self.epsilon = 1e-6
+    self.exclude_from_weight_decay = None
 
   def apply_gradients(self, grads_and_vars, global_step=None, name=None):
     """See base class."""
