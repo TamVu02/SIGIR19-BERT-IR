@@ -25,6 +25,7 @@ import math
 import re
 import six
 import tensorflow as tf
+import numpy as np
 
 
 class BertConfig(object):
@@ -410,7 +411,8 @@ def embedding_lookup(input_ids,
   #print([vocab_size, embedding_size])
   initializer = create_initializer()
   embedding_table = tf.Variable(
-    initial_value=initializer(shape=(vocab_size, embedding_size)),
+    initial_value=np.zeros((vocab_size, embedding_size)),
+    #initial_value=initializer(shape=(vocab_size, embedding_size)),
     name=word_embedding_name)
 #   embedding_table =tf.Variable(
 #     shape = tf.TensorShape([vocab_size, embedding_size]),
