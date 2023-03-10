@@ -24,12 +24,12 @@ import tensorflow as tf
 
 def create_optimizer(loss, init_lr, num_train_steps, num_warmup_steps, use_tpu):
   """Creates an optimizer training op."""
-  global_step = tf.train.get_or_create_global_step()
+  global_step = tf.compat.v1.train.get_or_create_global_step()
 
   learning_rate = tf.constant(value=init_lr, shape=[], dtype=tf.float32)
 
   # Implements linear decay of the learning rate.
-  learning_rate = tf.train.polynomial_decay(
+  learning_rate = tf.compat.v1.train.polynomial_decay(
       learning_rate,
       global_step,
       num_train_steps,
@@ -67,7 +67,7 @@ def create_optimizer(loss, init_lr, num_train_steps, num_warmup_steps, use_tpu):
   if use_tpu:
     optimizer = tf.compat.v1.tpu.CrossShardOptimizer(optimizer)
 
-  tvars = tf.trainable_variables()
+  tvars = tf.compat.v1.trainable_variables
   grads = tf.gradients(loss, tvars)
 
   # This is how the model was pre-trained.
@@ -114,18 +114,18 @@ class AdamWeightDecayOptimizer(tf.keras.optimizers.Optimizer):
 
       param_name = self._get_variable_name(param.name)
 
-      m = tf.get_variable(
+      m = tf.Variable(
           name=param_name + "/adam_m",
           shape=param.shape.as_list(),
           dtype=tf.float32,
           trainable=False,
-          initializer=tf.zeros_initializer())
-      v = tf.get_variable(
+          initial_value=tf.zeros_initializer())
+      v = tf.Variable(
           name=param_name + "/adam_v",
           shape=param.shape.as_list(),
           dtype=tf.float32,
           trainable=False,
-          initializer=tf.zeros_initializer())
+          initial_value=tf.zeros_initializer())
 
       # Standard Adam update.
       next_m = (
