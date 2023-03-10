@@ -27,6 +27,7 @@ import tokenization
 import tensorflow as tf
 import random
 import json
+import numpy as np
 
 flags = tf.compat.v1.flags
 
@@ -906,12 +907,13 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
 
     hidden_size = output_layer.shape[-1]
 
-    output_weights = tf.get_variable(
-        "output_weights", [num_labels, hidden_size],
-        initializer=tf.truncated_normal_initializer(stddev=0.02))
+    output_weights = tf.Variable(
+        initial_value=np.zeros((num_labels, hidden_size),dtype=np.float32),
+        name="output_weights")
 
-    output_bias = tf.get_variable(
-        "output_bias", [num_labels], initializer=tf.zeros_initializer())
+    output_bias = tf.Variable(
+        initial_value=np.zeros((num_labels),dtype=np.float32),
+        name="output_bias")
 
     with tf.compat.v1.variable_scope("loss"):
         if is_training:
