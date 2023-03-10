@@ -409,7 +409,7 @@ def embedding_lookup(input_ids,
   if input_ids.shape.ndims == 2:
     input_ids = tf.expand_dims(input_ids, axis=[-1])
   #print([vocab_size, embedding_size])
-  initializer = create_initializer()
+  #initializer = create_initializer()
   embedding_table = tf.Variable(
     initial_value=np.zeros((vocab_size, embedding_size)),
     #initial_value=initializer(shape=(vocab_size, embedding_size)),
