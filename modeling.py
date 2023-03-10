@@ -411,7 +411,7 @@ def embedding_lookup(input_ids,
   #print([vocab_size, embedding_size])
   #initializer = create_initializer()
   embedding_table = tf.Variable(
-    initial_value=np.zeros((vocab_size, embedding_size)),
+    initial_value=np.zeros((vocab_size, embedding_size),dtype=np.float32),
     #initial_value=initializer(shape=(vocab_size, embedding_size)),
     name=word_embedding_name)
 #   embedding_table =tf.Variable(
@@ -486,7 +486,7 @@ def embedding_postprocessor(input_tensor,
                        "`use_token_type` is True.")
     token_type_table = tf.Variable(
         name=token_type_embedding_name,
-        initial_value=np.zeros((token_type_vocab_size, width)))
+        initial_value=np.zeros((token_type_vocab_size, width),dtype=np.float32))
 #         shape=(token_type_vocab_size, width),
 #         initial_value=create_initializer(initializer_range))
     # This vocab will be small so we always do one-hot here, since it is always
@@ -503,7 +503,7 @@ def embedding_postprocessor(input_tensor,
     with tf.control_dependencies([assert_op]):
       full_position_embeddings = tf.Variable(
           name=position_embedding_name,
-          initial_value=np.zeros((max_position_embeddings, width)))
+          initial_value=np.zeros((max_position_embeddings, width),dtype=np.float32))
 #           shape=(max_position_embeddings, width),
 #           initial_value=create_initializer(initializer_range))
       # Since the position embedding table is a learned variable, we create it
