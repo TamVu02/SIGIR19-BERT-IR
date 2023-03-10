@@ -700,7 +700,7 @@ def attention_layer(from_tensor,
       activation=value_act,
       name="value")
       #kernel_initializer=create_initializer(initializer_range))
-   value_tensor=value_layer(to_tensor_2d)
+  value_tensor=value_layer(to_tensor_2d)
 
   # `query_layer` = [B, N, F, H]
   query_tensor = transpose_for_scores(query_tensor, batch_size,
