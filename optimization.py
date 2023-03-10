@@ -27,6 +27,7 @@ def create_optimizer(loss, init_lr, num_train_steps, num_warmup_steps, use_tpu):
   global_step = tf.compat.v1.train.get_or_create_global_step()
 
   learning_rate = tf.constant(value=init_lr, shape=[], dtype=tf.float32)
+  print('Current learning_rate : ',learning_rate)
 
   # Implements linear decay of the learning rate.
   learning_rate = tf.compat.v1.train.polynomial_decay(
