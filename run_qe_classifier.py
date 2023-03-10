@@ -2,7 +2,7 @@
 # Copyright 2018 The Google AI Language Team Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
+# you may not use this file except in compliance with the License
 # You may obtain a copy of the License at
 #
 #     http://www.apache.org/licenses/LICENSE-2.0
@@ -971,7 +971,7 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
                 print(tf.train.list_variables(init_checkpoint))
 
                 def tpu_scaffold():
-                    #tf.compat.v1.train.init_from_checkpoint(init_checkpoint, assignment_map)
+                    tf.compat.v1.train.init_from_checkpoint(init_checkpoint, assignment_map)
                     return tf.compat.v1.train.Scaffold()
 
                 scaffold_fn = tpu_scaffold
