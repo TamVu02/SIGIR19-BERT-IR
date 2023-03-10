@@ -60,7 +60,7 @@ def create_optimizer(loss, init_lr, num_train_steps, num_warmup_steps, use_tpu):
   # is how the model was trained (note that the Adam m/v variables are NOT
   # loaded from init_checkpoint.)
   optimizer = AdamWeightDecayOptimizer(
-      learning_rate,
+      learning_rate=learning_rate,
       weight_decay_rate=0.01,
       beta_1=0.9,
       beta_2=0.999,
@@ -91,7 +91,7 @@ class AdamWeightDecayOptimizer(tf.keras.optimizers.Optimizer):
   """A basic Adam optimizer that includes "correct" L2 weight decay."""
 
   def __init__(self,
-               learning_rate,
+               learning_rate=learning_rate,
                weight_decay_rate=0.0,
                beta_1=0.9,
                beta_2=0.999,
@@ -99,7 +99,7 @@ class AdamWeightDecayOptimizer(tf.keras.optimizers.Optimizer):
                exclude_from_weight_decay=None,
                name="AdamWeightDecayOptimizer"):
     """Constructs a AdamWeightDecayOptimizer."""
-    super(AdamWeightDecayOptimizer, self).__init__(True, name)
+    #super(AdamWeightDecayOptimizer, self).__init__(False, name)
 
     self.learning_rate = learning_rate
     self.weight_decay_rate = weight_decay_rate
