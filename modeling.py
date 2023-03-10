@@ -375,7 +375,7 @@ def layer_norm_and_dropout(input_tensor, dropout_prob, name=None):
 @tf.function
 def create_initializer(initializer_range=0.02):
   """Creates a `truncated_normal_initializer` with the given range."""
-  return tf.compat.v1.truncated_normal_initializer(stddev=initializer_range)
+  return tf.keras.initializers.TruncatedNormal(stddev=initializer_range)
 
 
 def embedding_lookup(input_ids,
@@ -408,8 +408,9 @@ def embedding_lookup(input_ids,
   if input_ids.shape.ndims == 2:
     input_ids = tf.expand_dims(input_ids, axis=[-1])
   #print([vocab_size, embedding_size])
+  initializer = create_initializer()
   embedding_table = tf.Variable(
-    initial_value=create_initializer(initializer_range)(shape=[vocab_size, embedding_size]),
+    initial_value=initializer(shape=(vocab_size, embedding_size)),
     name=word_embedding_name)
 #   embedding_table =tf.Variable(
 #     shape = tf.TensorShape([vocab_size, embedding_size]),
