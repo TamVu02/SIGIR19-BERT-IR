@@ -407,9 +407,9 @@ def embedding_lookup(input_ids,
   # reshape to [batch_size, seq_length, 1].
   if input_ids.shape.ndims == 2:
     input_ids = tf.expand_dims(input_ids, axis=[-1])
-
+  print([vocab_size, embedding_size])
   embedding_table =tf.Variable(
-    shape=[vocab_size, embedding_size],
+    shape = [vocab_size, embedding_size],
     name=word_embedding_name,
     #shape=[vocab_size, embedding_size], #[30522, 128]
     initial_value=create_initializer(initializer_range))
