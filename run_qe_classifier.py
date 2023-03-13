@@ -796,7 +796,7 @@ def file_based_convert_examples_to_features(
         examples, label_list, max_seq_length, tokenizer, output_file):
     """Convert a set of `InputExample`s to a TFRecord file."""
 
-    writer = tf.python_io.TFRecordWriter(output_file)
+    writer = tf.io.TFRecordWriter(output_file)
 
     for (ex_index, example) in enumerate(examples):
         if ex_index % 10000 == 0:
