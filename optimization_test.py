@@ -39,7 +39,7 @@ class OptimizationTest(tf.test.TestCase):
         beta_1=0.9,
         beta_2=0.999,
         epsilon=1e-06)
-      #train_op = optimizer.apply_gradients(zip(grads, tvars), global_step) #____! ! !
+      train_op = optimizer.apply_gradients(zip(grads, tvars), global_step) #____! ! !
       init_op = tf.group(tf.compat.v1.global_variables_initializer(),
                          tf.compat.v1.local_variables_initializer())
       sess.run(init_op)
