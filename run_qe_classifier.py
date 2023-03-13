@@ -433,8 +433,8 @@ class ClueWebProcessor(DataProcessor):
 class RobustPassageProcessor(DataProcessor):
 
     def __init__(self):
-        self.max_test_depth = 100  # for testing, we re-rank the top 100 results
-        self.max_train_depth = 1000  # for training, we use negative samples from the top 1000 documents
+        self.max_test_depth = 2  # for testing, we re-rank the top 100 results
+        self.max_train_depth = 2  # for training, we use negative samples from the top 1000 documents
         self.n_folds = 5
         self.fold = FLAGS.fold
         self.q_fields = FLAGS.query_field.split(' ')
@@ -533,8 +533,8 @@ class RobustPassageProcessor(DataProcessor):
     def _read_qrel(self, qrel_file):
         qrels = set()
         for line in qrel_file:
-            qid, _, docid, rel = line.strip().split(' ')
-            rel = int(rel)
+            qid, _, docid, rel = line.strip().split(',')
+            rel = int(rel.split(':')[1])
             if rel > 0:
                 qrels.add((qid, docid))
         return qrels
@@ -543,7 +543,7 @@ class RobustPassageProcessor(DataProcessor):
         qid2queries = {}
         for i, line in enumerate(query_file):
             json_dict = json.loads(line)
-            qid = json_dict['qid']
+            qid = json_dict['query_id']
             qid2queries[qid] = json_dict
             if i < 3:
                 tf.compat.v1.logging.info("Example Q: {}".format(json_dict))
@@ -799,7 +799,7 @@ def file_based_convert_examples_to_features(
     writer = tf.io.TFRecordWriter(output_file)
 
     for (ex_index, example) in enumerate(examples):
-        if ex_index % 10000 == 0:
+        if ex_index % 2 == 0:
             tf.compat.v1.logging.info("Writing example %d of %d" % (ex_index, len(examples)))
 
         feature = convert_single_example(ex_index, example, label_list,
