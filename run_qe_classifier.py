@@ -797,8 +797,6 @@ def file_based_convert_examples_to_features(
     """Convert a set of `InputExample`s to a TFRecord file."""
 
     writer = tf.io.TFRecordWriter(output_file)
-    
-    print("file_based_convert_examples_to_features TESTING ___________________________________________________________________________________________________________________________________________________________-")
 
     for (ex_index, example) in enumerate(examples):
         if ex_index % 2 == 0:
@@ -1158,9 +1156,9 @@ def main(_):
     train_examples = None
     num_train_steps = None
     num_warmup_steps = None
-    print('____________CHECK FLAGS DO TRAIN __________________________________________________________________________________________________________________________________________-')
+    
     if FLAGS.do_train:
-        print("__________________--CHECK______________________________________________________________________________________________________________________________________________________________________________________________________________________")
+        
         train_examples = processor.get_train_examples(FLAGS.data_dir)
         num_train_steps = int(
             len(train_examples) / FLAGS.train_batch_size * FLAGS.num_train_epochs)
