@@ -18,25 +18,30 @@ from __future__ import print_function
 
 import optimization
 import tensorflow as tf
+import numpy as np
 
 
 class OptimizationTest(tf.test.TestCase):
 
   def test_adam(self):
     with self.test_session() as sess:
-      w = tf.get_variable(
-          "w",
-          shape=[3],
-          initializer=tf.constant_initializer([0.1, -0.2, -0.1]))
+      w = tf.Variable(
+          name="w",,
+          #shape=[3],
+          initial_value=np.zeros((3,),dtype=np.float32))
       x = tf.constant([0.4, 0.2, -0.5])
       loss = tf.reduce_mean(tf.square(x - w))
       tvars = tf.trainable_variables()
       grads = tf.gradients(loss, tvars)
-      global_step = tf.train.get_or_create_global_step()
-      optimizer = optimization.AdamWeightDecayOptimizer(learning_rate=0.2)
-      train_op = optimizer.apply_gradients(zip(grads, tvars), global_step)
-      init_op = tf.group(tf.global_variables_initializer(),
-                         tf.local_variables_initializer())
+      global_step = tf.compat.v1.train.get_or_create_global_step()
+      optimizer = tf.keras.optimizers.Adam(
+        learning_rate=0.2,
+        beta_1=0.9,
+        beta_2=0.999,
+        epsilon=1e-06)
+      #train_op = optimizer.apply_gradients(zip(grads, tvars), global_step) #____! ! !
+      init_op = tf.group(tf.compat.v1.global_variables_initializer(),
+                         tf.compat.v1.local_variables_initializer())
       sess.run(init_op)
       for _ in range(100):
         sess.run(train_op)
