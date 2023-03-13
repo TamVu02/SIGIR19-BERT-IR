@@ -25,11 +25,11 @@ import tensorflow as tf
 def create_optimizer(loss, init_lr, num_train_steps, num_warmup_steps, use_tpu):
   """Creates an optimizer training op."""
   global_step = tf.compat.v1.train.get_or_create_global_step()
-  print('Before learning_rate : ',init_lr)
+  #print('Before learning_rate : ',init_lr)
 
   #learning_rate = tf.convert_to_tensor(init_lr,dtype=tf.float32)#(value=init_lr, shape=[], dtype=tf.float32)
   learning_rate=init_lr
-  print('Current learning_rate : ',learning_rate)
+  #print('Current learning_rate : ',learning_rate)
 
   # Implements linear decay of the learning rate.
 #   learning_rate = tf.compat.v1.train.polynomial_decay(
@@ -58,7 +58,7 @@ def create_optimizer(loss, init_lr, num_train_steps, num_warmup_steps, use_tpu):
   # It is recommended that you use this optimizer for fine tuning, since this
   # is how the model was trained (note that the Adam m/v variables are NOT
   # loaded from init_checkpoint.)
-  print('Current learning_rate : ',learning_rate)
+  #print('Current learning_rate : ',learning_rate)
   optimizer=tf.keras.optimizers.Adam(
     learning_rate=learning_rate,
     beta_1=0.9,
