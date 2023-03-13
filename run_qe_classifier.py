@@ -1161,7 +1161,7 @@ def main(_):
         num_train_steps = int(
             len(train_examples) / FLAGS.train_batch_size * FLAGS.num_train_epochs)
         num_warmup_steps = int(num_train_steps * FLAGS.warmup_proportion)
-        train_file = os.path.join(FLAGS.output_dir, "train.tf_record")
+        train_file = os.path.join(FLAGS.output_dir, "train.tfrecord")
         file_based_convert_examples_to_features(
             train_examples, label_list, FLAGS.max_seq_length, tokenizer, train_file)
 
