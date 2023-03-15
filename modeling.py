@@ -278,7 +278,8 @@ def gelu(input_tensor):
   Returns:
     `input_tensor` with the GELU activation applied.
   """
-  cdf = 0.5 * (1.0 + tf.erf(input_tensor / tf.sqrt(2.0)))
+  cdf = 0.5 * (1.0 + tf.tanh(
+      (np.sqrt(2 / np.pi) * (x + 0.044715 * tf.pow(x, 3)))))
   return input_tensor * cdf
 
 
