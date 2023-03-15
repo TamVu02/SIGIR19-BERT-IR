@@ -701,7 +701,7 @@ def attention_layer(from_tensor,
       #units=from_seq_length,
       units=num_attention_heads * size_per_head,
       activation=key_act,
-      name="key")
+      name="key",
       kernel_initializer=create_initializer(initializer_range=initializer_range,shape=(1,1))
   key_tensor=key_layer(to_tensor_2d)
 
