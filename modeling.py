@@ -702,7 +702,7 @@ def attention_layer(from_tensor,
       units=num_attention_heads * size_per_head,
       activation=key_act,
       name="key",
-      kernel_initializer=create_initializer(initializer_range=initializer_range,shape=(1,1))
+      kernel_initializer=create_initializer(initializer_range=initializer_range,shape=(1,1)))
   key_tensor=key_layer(to_tensor_2d)
 
   # `value_layer` = [B*T, N*H]
@@ -711,7 +711,7 @@ def attention_layer(from_tensor,
       units=num_attention_heads * size_per_head,
       activation=value_act,
       name="value",
-      kernel_initializer=create_initializer(initializer_range=initializer_range,shape=(1,1))
+      kernel_initializer=create_initializer(initializer_range=initializer_range,shape=(1,1)))
   value_tensor=value_layer(to_tensor_2d)
 
   # `query_layer` = [B, N, F, H]
@@ -886,7 +886,7 @@ def transformer_model(input_tensor,
           att_layer = tf.keras.layers.Dense(
               #attention_output)
               units=hidden_size,
-              kernel_initializer=create_initializer(initializer_range=initializer_range,shape=(1,1))
+              kernel_initializer=create_initializer(initializer_range=initializer_range,shape=(1,1)))
           attention_output=att_layer(attention_output)
           attention_output = dropout(attention_output, hidden_dropout_prob)
           attention_output = layer_norm(attention_output + layer_input)
@@ -897,7 +897,7 @@ def transformer_model(input_tensor,
             #attention_output,
             units=intermediate_size,
             #activation=intermediate_act_fn,
-            kernel_initializer=create_initializer(initializer_range=initializer_range,shape=(1,1))
+            kernel_initializer=create_initializer(initializer_range=initializer_range,shape=(1,1)))
         intermediate_output=intermediate_layer(attention_output)
         
 
@@ -906,7 +906,7 @@ def transformer_model(input_tensor,
         layer_layer = tf.keras.layers.Dense(
             #intermediate_output,
             units=hidden_size,
-            kernel_initializer=create_initializer(initializer_range=initializer_range,shape=(1,1))
+            kernel_initializer=create_initializer(initializer_range=initializer_range,shape=(1,1)))
         layer_output=layer_layer(intermediate_output)
         layer_output = dropout(layer_output, hidden_dropout_prob)
         layer_output = layer_norm(layer_output + attention_output)
