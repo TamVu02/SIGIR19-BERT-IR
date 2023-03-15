@@ -417,7 +417,7 @@ def embedding_lookup(input_ids,
   #initializer = create_initializer()
   #initialier_num=tf.random.truncated_normal(shape=(vocab_size, embedding_size),stddev=initializer_range,dtype=tf.float32)
   embedding_table = tf.Variable(
-    initial_value=initialier_num,
+    #initial_value=initialier_num,
     #initial_value=create_initializer(initializer_range=initializer_range,shape=(vocab_size, embedding_size)),
     dtype=tf.float32,
     initial_value=np.zeros((vocab_size, embedding_size),dtype=np.float32),
