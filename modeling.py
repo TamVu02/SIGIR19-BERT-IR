@@ -227,11 +227,12 @@ class BertModel(object):
         # We "pool" the model by simply taking the hidden state corresponding
         # to the first token. We assume that this has been pre-trained
         first_token_tensor = tf.squeeze(self.sequence_output[:, 0:1, :], axis=1)
+        initialier_num=tf.random.truncated_normal(shapeshape=(1,1),stddev=config.initializer_range,dtype=tf.float32)
         pooled_layer = tf.keras.layers.Dense(
             #first_token_tensor,
             units=config.hidden_size,
             activation=tf.tanh,
-            kernel_initializer=tf.random.truncated_normal(shapeshape=(1,1),stddev=config.initializer_range,dtype=tf.float32))
+            kernel_initializer=initialier_num)
             #kernel_initializer=create_initializer(initializer_range=config.initializer_range,shape=(1,1)))
         self.pooled_output=pooled_layer(first_token_tensor)
 
@@ -414,8 +415,9 @@ def embedding_lookup(input_ids,
     input_ids = tf.expand_dims(input_ids, axis=[-1])
   #print([vocab_size, embedding_size])
   #initializer = create_initializer()
+  initialier_num=tf.random.truncated_normal(shape=(vocab_size, embedding_size),stddev=initializer_range,dtype=tf.float32)
   embedding_table = tf.Variable(
-    initial_value=tf.random.truncated_normal(shape=(vocab_size, embedding_size),stddev=initializer_range,dtype=tf.float32),
+    initial_value=initialier_num,
     #initial_value=create_initializer(initializer_range=initializer_range,shape=(vocab_size, embedding_size)),
     dtype=tf.float32,
     #initial_value=np.zeros((vocab_size, embedding_size),dtype=np.float32),
@@ -491,9 +493,10 @@ def embedding_postprocessor(input_tensor,
     if token_type_ids is None:
       raise ValueError("`token_type_ids` must be specified if"
                        "`use_token_type` is True.")
+    initialier_num=tf.random.truncated_normal(shape=(token_type_vocab_size, width),stddev=initializer_range,dtype=tf.float32)
     token_type_table = tf.Variable(
         name=token_type_embedding_name,
-        initial_value=tf.random.truncated_normal(shape=(token_type_vocab_size, width),stddev=initializer_range,dtype=tf.float32),
+        initial_value=initialier_num,
         #initial_value=create_initializer(initializer_range=initializer_range,shape=(token_type_vocab_size, width)),
         dtype=tf.float32)
 #         shape=(token_type_vocab_size, width),
@@ -510,9 +513,10 @@ def embedding_postprocessor(input_tensor,
   if use_position_embeddings:
     assert_op = tf.debugging.assert_less_equal(seq_length, max_position_embeddings)
     with tf.control_dependencies([assert_op]):
+      initialier_num=tf.random.truncated_normal(shape=(max_position_embeddings, width),stddev=initializer_range,dtype=tf.float32)
       full_position_embeddings = tf.Variable(
           name=position_embedding_name,
-          initial_value=tf.random.truncated_normal(shape=(max_position_embeddings, width),stddev=initializer_range,dtype=tf.float32),
+          initial_value=initialier_num,
           #initial_value=create_initializer(initializer_range=initializer_range,shape=(max_position_embeddings, width)),
           dtype=tf.float32)
 #           shape=(max_position_embeddings, width),
@@ -691,32 +695,35 @@ def attention_layer(from_tensor,
   #print(from_seq_length)
 
   # `query_layer` = [B*F, N*H]
+  initialier_num=tf.random.truncated_normal(shape=(1,1),stddev=initializer_range,dtype=tf.float32)
   query_layer = tf.keras.layers.Dense(
       #units=from_seq_length,
       units=num_attention_heads * size_per_head,
       activation=query_act,
       name="query",
-      kernel_initializer=tf.random.truncated_normal(shape=(1,1),stddev=initializer_range,dtype=tf.float32))
+      kernel_initializer=initialier_num)
   query_tensor=query_layer(from_tensor_2d)
   #print(query_tensor.shape)
 
+  initialier_num=tf.random.truncated_normal(shape=(1,1),stddev=initializer_range,dtype=tf.float32)
   # `key_layer` = [B*T, N*H]
   key_layer = tf.keras.layers.Dense(
       #units=from_seq_length,
       units=num_attention_heads * size_per_head,
       activation=key_act,
       name="key",
-      kernel_initializer=tf.random.truncated_normal(shape=(1,1),stddev=initializer_range,dtype=tf.float32))
+      kernel_initializer=initialier_num)
       #kernel_initializer=create_initializer(initializer_range=initializer_range,shape=(1,1)))
   key_tensor=key_layer(to_tensor_2d)
 
+  initialier_num=tf.random.truncated_normal(shape=(1,1),stddev=initializer_range,dtype=tf.float32)
   # `value_layer` = [B*T, N*H]
   value_layer = tf.keras.layers.Dense(
       #units=from_seq_length,
       units=num_attention_heads * size_per_head,
       activation=value_act,
       name="value",
-      kernel_initializer=tf.random.truncated_normal(shape=(1,1),stddev=initializer_range,dtype=tf.float32))
+      kernel_initializer=initialier_num)
       #kernel_initializer=create_initializer(initializer_range=initializer_range,shape=(1,1)))
   value_tensor=value_layer(to_tensor_2d)
 
@@ -888,11 +895,14 @@ def transformer_model(input_tensor,
 
         # Run a linear projection of `hidden_size` then add a residual
         # with `layer_input`.
+        
+        initialier_num=tf.random.truncated_normal(shape=(1,1),stddev=initializer_range,dtype=tf.float32)
+        
         with tf.compat.v1.variable_scope("output"):
           att_layer = tf.keras.layers.Dense(
               #attention_output)
               units=hidden_size,
-              kernel_initializer=tf.random.truncated_normal(shape=(1,1),stddev=initializer_range,dtype=tf.float32))
+              kernel_initializer=initialier_num)
               #kernel_initializer=create_initializer(initializer_range=initializer_range,shape=(1,1)))
           attention_output=att_layer(attention_output)
           attention_output = dropout(attention_output, hidden_dropout_prob)
@@ -904,7 +914,7 @@ def transformer_model(input_tensor,
             #attention_output,
             units=intermediate_size,
             activation=intermediate_act_fn,
-            kernel_initializer=tf.random.truncated_normal(shape=(1,1),stddev=initializer_range,dtype=tf.float32))
+            kernel_initializer=initialier_num)
             #kernel_initializer=create_initializer(initializer_range=initializer_range,shape=(1,1)))
         intermediate_output=intermediate_layer(attention_output)
         
@@ -914,7 +924,7 @@ def transformer_model(input_tensor,
         layer_layer = tf.keras.layers.Dense(
             #intermediate_output,
             units=hidden_size,
-            kernel_initializer=tf.random.truncated_normal(shape=(1,1),stddev=initializer_range,dtype=tf.float32))
+            kernel_initializer=initialier_num)
             #kernel_initializer=create_initializer(initializer_range=initializer_range,shape=(1,1)))
         layer_output=layer_layer(intermediate_output)
         layer_output = dropout(layer_output, hidden_dropout_prob)
