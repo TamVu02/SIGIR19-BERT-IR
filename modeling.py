@@ -231,7 +231,8 @@ class BertModel(object):
             #first_token_tensor,
             units=config.hidden_size,
             activation=tf.tanh,
-            kernel_initializer=create_initializer(initializer_range=config.initializer_range,shape=(1,1)))
+            kernel_initializer=tf.random.truncated_normal(shapeshape=(1,1),stddev=config.initializer_range,dtype=tf.float32))
+            #kernel_initializer=create_initializer(initializer_range=config.initializer_range,shape=(1,1)))
         self.pooled_output=pooled_layer(first_token_tensor)
 
   def get_pooled_output(self):
@@ -414,7 +415,8 @@ def embedding_lookup(input_ids,
   #print([vocab_size, embedding_size])
   #initializer = create_initializer()
   embedding_table = tf.Variable(
-    initial_value=create_initializer(initializer_range=initializer_range,shape=(vocab_size, embedding_size)),
+    initial_value=tf.random.truncated_normal(shape=(vocab_size, embedding_size),stddev=initializer_range,dtype=tf.float32),
+    #initial_value=create_initializer(initializer_range=initializer_range,shape=(vocab_size, embedding_size)),
     dtype=tf.float32,
     #initial_value=np.zeros((vocab_size, embedding_size),dtype=np.float32),
     #initial_value=initializer(shape=(vocab_size, embedding_size)),
@@ -491,7 +493,8 @@ def embedding_postprocessor(input_tensor,
                        "`use_token_type` is True.")
     token_type_table = tf.Variable(
         name=token_type_embedding_name,
-        initial_value=create_initializer(initializer_range=initializer_range,shape=(token_type_vocab_size, width)),
+        initial_value=tf.random.truncated_normal(shape=(token_type_vocab_size, width),stddev=initializer_range,dtype=tf.float32),
+        #initial_value=create_initializer(initializer_range=initializer_range,shape=(token_type_vocab_size, width)),
         dtype=tf.float32)
 #         shape=(token_type_vocab_size, width),
 #         initial_value=create_initializer(initializer_range))
@@ -509,7 +512,8 @@ def embedding_postprocessor(input_tensor,
     with tf.control_dependencies([assert_op]):
       full_position_embeddings = tf.Variable(
           name=position_embedding_name,
-          initial_value=create_initializer(initializer_range=initializer_range,shape=(max_position_embeddings, width)),
+          initial_value=tf.random.truncated_normal(shape=(max_position_embeddings, width),stddev=initializer_range,dtype=tf.float32),
+          #initial_value=create_initializer(initializer_range=initializer_range,shape=(max_position_embeddings, width)),
           dtype=tf.float32)
 #           shape=(max_position_embeddings, width),
 #           initial_value=create_initializer(initializer_range))
@@ -691,8 +695,9 @@ def attention_layer(from_tensor,
       #units=from_seq_length,
       units=num_attention_heads * size_per_head,
       activation=query_act,
-      name="query")
-      #kernel_initializer=np.zeros(1),dtype=np.float32)
+      name="query",
+    
+      kernel_initializer=np.zeros(1),dtype=np.float32))
   query_tensor=query_layer(from_tensor_2d)
   #print(query_tensor.shape)
 
@@ -702,7 +707,8 @@ def attention_layer(from_tensor,
       units=num_attention_heads * size_per_head,
       activation=key_act,
       name="key",
-      kernel_initializer=create_initializer(initializer_range=initializer_range,shape=(1,1)))
+      kernel_initializer=tf.random.truncated_normal(shape=(1,1),stddev=initializer_range,dtype=tf.float32))
+      #kernel_initializer=create_initializer(initializer_range=initializer_range,shape=(1,1)))
   key_tensor=key_layer(to_tensor_2d)
 
   # `value_layer` = [B*T, N*H]
@@ -711,7 +717,8 @@ def attention_layer(from_tensor,
       units=num_attention_heads * size_per_head,
       activation=value_act,
       name="value",
-      kernel_initializer=create_initializer(initializer_range=initializer_range,shape=(1,1)))
+      kernel_initializer=tf.random.truncated_normal(shape=(1,1),stddev=initializer_range,dtype=tf.float32))
+      #kernel_initializer=create_initializer(initializer_range=initializer_range,shape=(1,1)))
   value_tensor=value_layer(to_tensor_2d)
 
   # `query_layer` = [B, N, F, H]
@@ -886,7 +893,8 @@ def transformer_model(input_tensor,
           att_layer = tf.keras.layers.Dense(
               #attention_output)
               units=hidden_size,
-              kernel_initializer=create_initializer(initializer_range=initializer_range,shape=(1,1)))
+              kernel_initializer=tf.random.truncated_normal(shape=(1,1),stddev=initializer_range,dtype=tf.float32))
+              #kernel_initializer=create_initializer(initializer_range=initializer_range,shape=(1,1)))
           attention_output=att_layer(attention_output)
           attention_output = dropout(attention_output, hidden_dropout_prob)
           attention_output = layer_norm(attention_output + layer_input)
@@ -896,8 +904,9 @@ def transformer_model(input_tensor,
         intermediate_layer = tf.keras.layers.Dense(
             #attention_output,
             units=intermediate_size,
-            #activation=intermediate_act_fn,
-            kernel_initializer=create_initializer(initializer_range=initializer_range,shape=(1,1)))
+            activation=intermediate_act_fn,
+            kernel_initializer=tf.random.truncated_normal(shape=(1,1),stddev=initializer_range,dtype=tf.float32))
+            #kernel_initializer=create_initializer(initializer_range=initializer_range,shape=(1,1)))
         intermediate_output=intermediate_layer(attention_output)
         
 
@@ -906,7 +915,8 @@ def transformer_model(input_tensor,
         layer_layer = tf.keras.layers.Dense(
             #intermediate_output,
             units=hidden_size,
-            kernel_initializer=create_initializer(initializer_range=initializer_range,shape=(1,1)))
+            kernel_initializer=tf.random.truncated_normal(shape=(1,1),stddev=initializer_range,dtype=tf.float32))
+            #kernel_initializer=create_initializer(initializer_range=initializer_range,shape=(1,1)))
         layer_output=layer_layer(intermediate_output)
         layer_output = dropout(layer_output, hidden_dropout_prob)
         layer_output = layer_norm(layer_output + attention_output)
