@@ -696,8 +696,7 @@ def attention_layer(from_tensor,
       units=num_attention_heads * size_per_head,
       activation=query_act,
       name="query",
-    
-      kernel_initializer=np.zeros(1),dtype=np.float32))
+      kernel_initializer=tf.random.truncated_normal(shape=(1,1),stddev=initializer_range,dtype=tf.float32))
   query_tensor=query_layer(from_tensor_2d)
   #print(query_tensor.shape)
 
