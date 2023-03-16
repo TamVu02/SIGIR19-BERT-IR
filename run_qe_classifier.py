@@ -1154,9 +1154,21 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
 
         output_spec = None
         if mode == tf.estimator.ModeKeys.TRAIN:
-            print(learning_rate)
-            train_op = optimization.create_optimizer(
-                total_loss, learning_rate, num_train_steps, num_warmup_steps, use_tpu)
+            global_step = tf.compat.v1.train.get_or_create_global_step()
+            optimizer=tf.keras.optimizers.experimental.AdamW(
+                learning_rate=learning_rate,
+                weight_decay=0.01,
+                beta_1=0.9,
+                beta_2=0.999,
+                epsilon=1e-06)
+            tvars = tf.compat.v1.trainable_variables()
+            grads = tf.gradients(loss, tvars)
+            (grads, _) = tf.clip_by_global_norm(grads, clip_norm=1.0)
+            train_op = optimizer.apply_gradients(zip(grads, tvars), global_step=global_step)
+            new_global_step = global_step + 1
+            train_op = tf.group(train_op, [global_step.assign(new_global_step)])
+#             train_op = optimization.create_optimizer(
+#                 total_loss, learning_rate, num_train_steps, num_warmup_steps, use_tpu)
 
             output_spec = tf.compat.v1.estimator.tpu.TPUEstimatorSpec(
                 mode=mode,
