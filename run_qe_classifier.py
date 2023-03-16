@@ -1155,7 +1155,7 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
         output_spec = None
         if mode == tf.estimator.ModeKeys.TRAIN:
             global_step = tf.compat.v1.train.get_or_create_global_step()
-             init_lr=learning_rate
+            init_lr=learning_rate
             if num_warmup_steps:
                 global_steps_int = tf.cast(global_step, tf.int32)
                 warmup_steps_int = tf.convert_to_tensor(num_warmup_steps, dtype=tf.int32)
