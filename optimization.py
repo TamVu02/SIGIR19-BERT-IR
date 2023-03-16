@@ -1,19 +1,3 @@
-# coding=utf-8
-# Copyright 2018 The Google AI Language Team Authors.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-"""Functions and classes related to optimization (weight updates)."""
-
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -24,19 +8,17 @@ import tensorflow as tf
 
 def create_optimizer(loss, init_lr, num_train_steps, num_warmup_steps, use_tpu):
   """Creates an optimizer training op."""
-  global_step = tf.compat.v1.train.get_or_create_global_step()
+  global_step = 1
 
-  #learning_rate = tf.convert_to_tensor(init_lr,dtype=tf.float32)#(value=init_lr, shape=[], dtype=tf.float32)
-  learning_rate=init_lr
+  learning_rate = tf.convert_to_tensor(init_lr,dtype=tf.float32)
+  #learning_rate=init_lr
+  print('Ini Current learning_rate : ',learning_rate,'  Type: ',type(learning_rate))
 
   # Implements linear decay of the learning rate.
-  learning_rate = tf.compat.v1.train.polynomial_decay(
-      learning_rate,
-      global_step,
-      num_train_steps,
-      end_learning_rate=0.0,
-      power=1.0,
-      cycle=False)
+  
+  global_step = min(global_step, num_train_steps)
+  learning_rate = (learning_rate - 0.0001) *(1 - global_step / num_train_steps) ** (1.0) + 0.0001
+  print('Poly decay Current learning_rate : ',learning_rate,'  Type: ',type(learning_rate))
 
   # Implements linear warmup. I.e., if global_step < num_warmup_steps, the
   # learning rate will be `global_step/num_warmup_steps * init_lr`.
@@ -56,7 +38,7 @@ def create_optimizer(loss, init_lr, num_train_steps, num_warmup_steps, use_tpu):
   # It is recommended that you use this optimizer for fine tuning, since this
   # is how the model was trained (note that the Adam m/v variables are NOT
   # loaded from init_checkpoint.)
-  print('Current learning_rate : ',learning_rate)
+  print('After warm up Current learning_rate : ',learning_rate,'  Type: ',type(learning_rate))
 #   optimizer=tf.keras.optimizers.experimental.AdamW(
 #     learning_rate=learning_rate,
 #     weight_decay=0.01,
@@ -72,12 +54,15 @@ def create_optimizer(loss, init_lr, num_train_steps, num_warmup_steps, use_tpu):
       beta_2=0.999,
       epsilon=1e-6,
       exclude_from_weight_decay=["LayerNorm", "layer_norm", "bias"])
+  print('After AdamW Current learning_rate : ',learning_rate,'  Type: ',type(learning_rate))
+  
 
-  if use_tpu:
-    optimizer = tf.compat.v1.tpu.CrossShardOptimizer(optimizer)
+#   if use_tpu:
+#     optimizer = tf.compat.v1.tpu.CrossShardOptimizer(optimizer)
 
   tvars = tf.compat.v1.trainable_variables()
   grads = tf.gradients(loss, tvars)
+  grads = [tf.compat.v1.tpu.cross_replica_sum(g) for g in grads]
 
   # This is how the model was pre-trained.
   (grads, _) = tf.clip_by_global_norm(grads, clip_norm=1.0)
@@ -93,7 +78,7 @@ def create_optimizer(loss, init_lr, num_train_steps, num_warmup_steps, use_tpu):
   return train_op
 
 
-class AdamWeightDecayOptimizer(tf.keras.optimizers.Optimizer):
+class AdamWeightDecayOptimizer():
   """A basic Adam optimizer that includes "correct" L2 weight decay."""
 
   def __init__(self,
@@ -105,7 +90,7 @@ class AdamWeightDecayOptimizer(tf.keras.optimizers.Optimizer):
                exclude_from_weight_decay=None,
                name="AdamWeightDecayOptimizer"):
     """Constructs a AdamWeightDecayOptimizer."""
-    super(AdamWeightDecayOptimizer, self).__init__(False, name)
+    #super(AdamWeightDecayOptimizer, self).__init__(True, name)
 
     self.learning_rate = learning_rate
     self.weight_decay_rate = weight_decay_rate
