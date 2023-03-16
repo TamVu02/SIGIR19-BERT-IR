@@ -109,20 +109,21 @@ class AdamWeightDecayOptimizer():
       param_name = self._get_variable_name(param.name)
       
       
-      m=tf.zeros(shape=param.shape.as_list(),dtype=tf.float32)
-      v=tf.zeros(shape=param.shape.as_list(),dtype=tf.float32)
+#       m=tf.zeros(shape=param.shape.as_list(),dtype=tf.float32)
+#       v=tf.zeros(shape=param.shape.as_list(),dtype=tf.float32)
 
-#       m = tf.Variable(
-#           name=param_name + "/adam_m",
-#           dtype=tf.float32,
-#           trainable=False,
-#           initial_value=tf.zeros(shape=param.shape.as_list()))
-#       v = tf.Variable(
-#           name=param_name + "/adam_v",
-#           #shape=param.shape.as_list(),
-#           dtype=tf.float32,
-#           trainable=False,
-#           initial_value=tf.zeros(shape=param.shape.as_list()))
+      m = tf.Variable(
+          name=param_name + "/adam_m",
+          dtype=tf.float32,
+          trainable=False,
+          #initial_value=tf.zeros(shape=param.shape.as_list()))
+          initial_value=lambda: tf.add(tf.zeros(shape=param.shape.as_list())))
+      v = tf.Variable(
+          name=param_name + "/adam_v",
+          #shape=param.shape.as_list(),
+          dtype=tf.float32,
+          trainable=False,
+          initial_value=lambda: tf.add(tf.zeros(shape=param.shape.as_list())))
 
       # Standard Adam update.
       next_m = (
@@ -149,10 +150,8 @@ class AdamWeightDecayOptimizer():
 
       assignments.extend(
           [param.assign(next_param),
-           #m.assign(next_m),
-           #v.assign(next_v)])
-           m=next_m,
-           v=next_v])
+           m.assign(next_m),
+           v.assign(next_v)])
     return tf.group(*assignments, name=name)
 
   def _do_use_weight_decay(self, param_name):
