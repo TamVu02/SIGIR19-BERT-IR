@@ -1175,7 +1175,7 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
                 beta_2=0.999,
                 epsilon=1e-06)
             tvars = tf.compat.v1.trainable_variables()
-            grads = tf.gradients(loss, tvars)
+            grads = tf.gradients(total_loss, tvars)
             (grads, _) = tf.clip_by_global_norm(grads, clip_norm=1.0)
             train_op = optimizer.apply_gradients(zip(grads, tvars), global_step=global_step)
             new_global_step = global_step + 1
