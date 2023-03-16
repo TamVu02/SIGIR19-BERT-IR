@@ -108,8 +108,9 @@ class AdamWeightDecayOptimizer():
 
       param_name = self._get_variable_name(param.name)
       
-     m=tf.zeros(shape=param.shape.as_list(),dtype=tf.float32)
-     v=tf.zeros(shape=param.shape.as_list(),dtype=tf.float32)
+      
+      m=tf.zeros(shape=param.shape.as_list(),dtype=tf.float32)
+      v=tf.zeros(shape=param.shape.as_list(),dtype=tf.float32)
 
 #       m = tf.Variable(
 #           name=param_name + "/adam_m",
