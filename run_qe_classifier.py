@@ -76,11 +76,11 @@ flags.DEFINE_bool(
     "do_predict", False,
     "Whether to run the model in inference mode on the test set.")
 
-flags.DEFINE_integer("train_batch_size", 32, "Total batch size for training.")
+flags.DEFINE_integer("train_batch_size", 8, "Total batch size for training.")
 
-flags.DEFINE_integer("eval_batch_size", 32, "Total batch size for eval.")
+flags.DEFINE_integer("eval_batch_size", 8, "Total batch size for eval.")
 
-flags.DEFINE_integer("predict_batch_size", 32, "Total batch size for predict.")
+flags.DEFINE_integer("predict_batch_size", 8, "Total batch size for predict.")
 
 flags.DEFINE_float("learning_rate", 5e-5, "The initial learning rate for Adam.")
 
@@ -92,7 +92,7 @@ flags.DEFINE_float(
     "Proportion of training to perform linear learning rate warmup for. "
     "E.g., 0.1 = 10% of training.")
 
-flags.DEFINE_integer("save_checkpoints_steps", 20000,
+flags.DEFINE_integer("save_checkpoints_steps", 2,
                      "How often to save the model checkpoint.")
 
 flags.DEFINE_integer("iterations_per_loop", 1000,
@@ -125,7 +125,7 @@ flags.DEFINE_integer(
     "Only used if `use_tpu` is True. Total number of TPU cores to use.")
 
 flags.DEFINE_integer(
-    "fold", 3,
+    "fold", 5,
     "run fold")
 
 flags.DEFINE_string(
@@ -313,8 +313,8 @@ class DataProcessor(object):
 class MyRobust04Processor(DataProcessor):
 
     def __init__(self):
-        self.max_test_depth = 2
-        self.max_train_depth = 2
+        self.max_test_depth = 100
+        self.max_train_depth = 200
         self.n_folds = 5
         self.fold = FOLD
         self.q_fields = QUERY_FIELD.split(' ')
@@ -334,7 +334,7 @@ class MyRobust04Processor(DataProcessor):
 
         qrel_file = tf.io.gfile.GFile(os.path.join(data_dir, "qrels"))
         qrels = self._read_qrel(qrel_file)
-        tf.compat.v1.logging.info("Qrel size: {}".format(len(qrels)))
+        tf.compat.v1.logging.info("Positive relevance Qrel size: {}".format(len(qrels)))
 
         query_file = tf.io.gfile.GFile(os.path.join(data_dir, "queries.json"))
         qid2queries = self._read_queries(query_file)
@@ -346,11 +346,12 @@ class MyRobust04Processor(DataProcessor):
                
                 items = line.strip().split('#')
                 trec_line = items[0]
-
+                # if len(trec_line.strip().split(' '))!=6:
+                #     continue
                 qid, _, docid, r, _, _ = trec_line.strip().split(' ')
                 
-                if int(docid.split('_')[-1].split('-')[-1])!=0 and random.random() > 0.1:
-                    continue
+                # if int(docid.split('_')[-1].split('-')[-1])!=0: #and random.random() > 0.1:
+                #     continue
                     
                 assert qid in qid2queries, "QID {} not found".format(qid)
                 q_json_dict = qid2queries[qid]
@@ -360,7 +361,6 @@ class MyRobust04Processor(DataProcessor):
 
                 json_dict = json.loads('#'.join(items[1:]))
                 d = tokenization.convert_to_unicode(json_dict["doc"]["body"])
-
                 r = int(r)
                 if r > self.max_train_depth:
                     continue
@@ -380,7 +380,7 @@ class MyRobust04Processor(DataProcessor):
         dev_file = tf.io.gfile.GFile(os.path.join(data_dir, "{}.trec.with_json".format(self.dev_folds)))
         qrel_file = tf.io.gfile.GFile(os.path.join(data_dir, "qrels"))
         qrels = self._read_qrel(qrel_file)
-        tf.compat.v1.logging.info("Qrel size: {}".format(len(qrels)))
+        tf.compat.v1.logging.info("Positive relevance Qrel size: {}".format(len(qrels)))
 
         query_file = tf.io.gfile.GFile(os.path.join(data_dir, "queries.json"))
         qid2queries = self._read_queries(query_file)
@@ -420,7 +420,7 @@ class MyRobust04Processor(DataProcessor):
         dev_file = tf.io.gfile.GFile(os.path.join(data_dir, "{}.trec.with_json".format(self.test_folds)))
         qrel_file = tf.io.gfile.GFile(os.path.join(data_dir, "qrels"))
         qrels = self._read_qrel(qrel_file)
-        tf.compat.v1.logging.info("Qrel size: {}".format(len(qrels)))
+        tf.compat.v1.logging.info("Positive relevance Qrel size: {}".format(len(qrels)))
 
         query_file = tf.io.gfile.GFile(os.path.join(data_dir, "queries.json"))
         qid2queries = self._read_queries(query_file)
@@ -437,9 +437,7 @@ class MyRobust04Processor(DataProcessor):
 
             json_dict = json.loads('#'.join(items[1:]))
             d = tokenization.convert_to_unicode(json_dict["doc"]["body"])
-
-            r = int(r)
-            if r > self.max_test_depth:
+            if int(r) > self.max_test_depth:
                 continue
             label = tokenization.convert_to_unicode("0")
             if (qid, docid) in qrels or (qid, docid.split('_')[0]) in qrels:
@@ -454,11 +452,9 @@ class MyRobust04Processor(DataProcessor):
     def _read_qrel(self, qrel_file):
         qrels = set()
         for line in qrel_file:
-            #print(line.strip().split(','))
             if len(line.strip().split(','))!=4:
                 continue
             qid,docid,rel,iter = line.strip().split(',')
-            #print(rel)
             rel = int(rel.split(':')[1])
             if rel > 0:
                 qrels.add((qid, docid))
@@ -476,7 +472,6 @@ class MyRobust04Processor(DataProcessor):
    
     def get_labels(self):
         return ["0", "1"]
-
 
 class ClueWebProcessor(DataProcessor):
 
