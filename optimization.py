@@ -110,16 +110,15 @@ class AdamWeightDecayOptimizer():
 
       m = tf.Variable(
           name=param_name + "/adam_m",
-          shape=param.shape.as_list(),
           dtype=tf.float32,
           trainable=False,
-          initial_value=tf.zeros_initializer())
+          initial_value=tf.zeros(shape=param.shape.as_list()))
       v = tf.Variable(
           name=param_name + "/adam_v",
-          shape=param.shape.as_list(),
+          #shape=param.shape.as_list(),
           dtype=tf.float32,
           trainable=False,
-          initial_value=tf.zeros_initializer())
+          initial_value=tf.zeros(shape=param.shape.as_list()))
 
       # Standard Adam update.
       next_m = (
