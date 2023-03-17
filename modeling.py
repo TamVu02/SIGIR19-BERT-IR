@@ -344,8 +344,8 @@ def get_assignment_map_from_checkpoint(tvars, init_checkpoint):
     assignment_map[name] = name_to_variable[name]
     initialized_variable_names[name] = 1
     initialized_variable_names[name + ":0"] = 1
-  print(assignment_map)
-  print(initialized_variable_names)
+#   print(assignment_map)
+#   print(initialized_variable_names)
   return (assignment_map, initialized_variable_names)
 
 
@@ -380,7 +380,7 @@ def layer_norm_and_dropout(input_tensor, dropout_prob, name=None):
   return output_tensor
 
 @tf.function
-def create_initializer(initializer_range=0.02,shape=()):
+def create_initializer(shape=(),initializer_range=0.02):
   """Creates a `truncated_normal_initializer` with the given range."""
   return tf.random.truncated_normal(shape,stddev=initializer_range,dtype=tf.float32)
 
@@ -414,7 +414,6 @@ def embedding_lookup(input_ids,
   # reshape to [batch_size, seq_length, 1].
   if input_ids.shape.ndims == 2:
     input_ids = tf.expand_dims(input_ids, axis=[-1])
-  #print([vocab_size, embedding_size])
   #initializer = create_initializer()
   #initialier_num=tf.random.truncated_normal(shape=(vocab_size, embedding_size),stddev=initializer_range,dtype=tf.float32)
   embedding_table = tf.Variable(
