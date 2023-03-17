@@ -16,7 +16,7 @@ def create_optimizer(loss, init_lr, num_train_steps, num_warmup_steps, use_tpu):
 
   # Implements linear decay of the learning rate.
   
-  global_step = min(global_step, num_train_steps)
+  #global_step = min(global_step, num_train_steps)
   learning_rate = (learning_rate - 0.0001) *(1 - global_step / num_train_steps) ** (1.0) + 0.0001
   #print('Poly decay Current learning_rate : ',learning_rate,'  Type: ',type(learning_rate))
 
