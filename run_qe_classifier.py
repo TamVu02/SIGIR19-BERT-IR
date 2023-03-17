@@ -95,7 +95,7 @@ flags.DEFINE_float(
 flags.DEFINE_integer("save_checkpoints_steps", 2,
                      "How often to save the model checkpoint.")
 
-flags.DEFINE_integer("iterations_per_loop", 1000,
+flags.DEFINE_integer("iterations_per_loop", 5,
                      "How many steps to make in each estimator call.")
 
 flags.DEFINE_bool("use_tpu", False, "Whether to use TPU or GPU/CPU.")
@@ -594,8 +594,8 @@ class ClueWebProcessor(DataProcessor):
 class RobustPassageProcessor(DataProcessor):
 
     def __init__(self):
-        self.max_test_depth = 2  # for testing, we re-rank the top 100 results
-        self.max_train_depth = 2  # for training, we use negative samples from the top 1000 documents
+        self.max_test_depth = 100  # for testing, we re-rank the top 100 results
+        self.max_train_depth =   # for training, we use negative samples from the top 1000 documents
         self.n_folds = 5
         self.fold = FLAGS.fold
         self.q_fields = FLAGS.query_field.split(' ')
@@ -1274,7 +1274,7 @@ def convert_examples_to_features(examples, label_list, max_seq_length,
 
     features = []
     for (ex_index, example) in enumerate(examples):
-        if ex_index % 10000 == 0:
+        if ex_index % 10 == 0:
             tf.compat.v1.logging.info("Writing example %d of %d" % (ex_index, len(examples)))
 
         feature = convert_single_example(ex_index, example, label_list,
