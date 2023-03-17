@@ -85,7 +85,7 @@ class AdamWeightDecayOptimizer():
                exclude_from_weight_decay=None,
                name="AdamWeightDecayOptimizer"):
     """Constructs a AdamWeightDecayOptimizer."""
-    super(AdamWeightDecayOptimizer, self).__init__(False, name)
+    #super(AdamWeightDecayOptimizer, self).__init__(name)
 
     self.learning_rate = learning_rate
     self.weight_decay_rate = weight_decay_rate
