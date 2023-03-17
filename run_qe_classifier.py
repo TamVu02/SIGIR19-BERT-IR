@@ -595,7 +595,7 @@ class RobustPassageProcessor(DataProcessor):
 
     def __init__(self):
         self.max_test_depth = 100  # for testing, we re-rank the top 100 results
-        self.max_train_depth =   # for training, we use negative samples from the top 1000 documents
+        self.max_train_depth =  200 # for training, we use negative samples from the top 1000 documents
         self.n_folds = 5
         self.fold = FLAGS.fold
         self.q_fields = FLAGS.query_field.split(' ')
