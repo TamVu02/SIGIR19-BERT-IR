@@ -9,17 +9,13 @@ import tensorflow as tf
 def create_optimizer(loss, init_lr, num_train_steps, num_warmup_steps, use_tpu):
   """Creates an optimizer training op."""
   global_step = tf.compat.v1.train.get_or_create_global_step()
-  #global_step=tf.cast(global_step,dtype=tf.float32)
 
   learning_rate = tf.convert_to_tensor(init_lr,dtype=tf.float64)
-  #learning_rate=init_lr
-  #print('Ini Current learning_rate : ',learning_rate,'  Type: ',type(learning_rate))
 
   # Implements linear decay of the learning rate.
   
   #global_step = min(global_step, num_train_steps)
   learning_rate = (learning_rate - 0.0001) *(1 - global_step / num_train_steps) ** (1.0) + 0.0001
-  #print('Poly decay Current learning_rate : ',learning_rate,'  Type: ',type(learning_rate))
 
   # Implements linear warmup. I.e., if global_step < num_warmup_steps, the
   # learning rate will be `global_step/num_warmup_steps * init_lr`.
@@ -40,7 +36,6 @@ def create_optimizer(loss, init_lr, num_train_steps, num_warmup_steps, use_tpu):
   # It is recommended that you use this optimizer for fine tuning, since this
   # is how the model was trained (note that the Adam m/v variables are NOT
   # loaded from init_checkpoint.)
-  #print('After warm up Current learning_rate : ',learning_rate,'  Type: ',type(learning_rate))
 #   optimizer=tf.keras.optimizers.experimental.AdamW(
 #     learning_rate=learning_rate,
 #     weight_decay=0.01,
@@ -56,9 +51,7 @@ def create_optimizer(loss, init_lr, num_train_steps, num_warmup_steps, use_tpu):
       beta_2=0.999,
       epsilon=1e-6,
       exclude_from_weight_decay=["LayerNorm", "layer_norm", "bias"])
-  #print('After AdamW Current learning_rate : ',learning_rate,'  Type: ',type(learning_rate))
   
-
 #   if use_tpu:
 #     optimizer = tf.compat.v1.tpu.CrossShardOptimizer(optimizer)
 
@@ -92,7 +85,7 @@ class AdamWeightDecayOptimizer():
                exclude_from_weight_decay=None,
                name="AdamWeightDecayOptimizer"):
     """Constructs a AdamWeightDecayOptimizer."""
-    #super(AdamWeightDecayOptimizer, self).__init__(True, name)
+    super(AdamWeightDecayOptimizer, self).__init__(False, name)
 
     self.learning_rate = learning_rate
     self.weight_decay_rate = weight_decay_rate
@@ -109,10 +102,6 @@ class AdamWeightDecayOptimizer():
         continue
 
       param_name = self._get_variable_name(param.name)
-      
-      
-#       m=tf.zeros(shape=param.shape.as_list(),dtype=tf.float32)
-#       v=tf.zeros(shape=param.shape.as_list(),dtype=tf.float32)
 
       m = tf.Variable(
           name=param_name + "/adam_m",
