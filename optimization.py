@@ -9,6 +9,7 @@ import tensorflow as tf
 def create_optimizer(loss, init_lr, num_train_steps, num_warmup_steps, use_tpu):
   """Creates an optimizer training op."""
   global_step = tf.compat.v1.train.get_or_create_global_step()
+  global_step=tf.cast(global_step,dtype=tf.float32)
 
   learning_rate = tf.convert_to_tensor(init_lr,dtype=tf.float32)
   #learning_rate=init_lr
