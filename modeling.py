@@ -27,6 +27,7 @@ import six
 import tensorflow as tf
 import numpy as np
 
+tf.config.run_functions_eagerly(True)
 
 class BertConfig(object):
   """Configuration for `BertModel`."""
@@ -382,7 +383,7 @@ def layer_norm_and_dropout(input_tensor, dropout_prob, name=None):
 def create_initializer(shape=(),initializer_range=0.02):
   """Creates a `truncated_normal_initializer` with the given range."""
   with tf.init_scope():
-    assert tf.executing_eagerly()
+    #assert tf.executing_eagerly()
     result=tf.random.truncated_normal(shape,stddev=initializer_range,dtype=tf.float32).numpy()
   return result
 
