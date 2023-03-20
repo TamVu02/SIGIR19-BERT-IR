@@ -234,7 +234,7 @@ class BertModel(object):
             units=config.hidden_size,
             activation=tf.tanh,
             #kernel_initializer=initialier_num)
-            kernel_initializer=np.random.normal(config.initializer_range))
+            kernel_initializer='glorot_uniform')
         self.pooled_output=pooled_layer(first_token_tensor)
 
   def get_pooled_output(self):
@@ -713,7 +713,7 @@ def attention_layer(from_tensor,
       activation=query_act,
       name="query",
       #kernel_initializer=initialier_num)
-      kernel_initializer=np.random.normal(initializer_range))
+      kernel_initializer='glorot_uniform')
   query_tensor=query_layer(from_tensor_2d)
   #print(query_tensor.shape)
 
@@ -725,7 +725,7 @@ def attention_layer(from_tensor,
       activation=key_act,
       name="key",
       #kernel_initializer=initialier_num)
-      kernel_initializer=np.random.normal(initializer_range))
+      kernel_initializer='glorot_uniform')
   key_tensor=key_layer(to_tensor_2d)
 
   #initialier_num=tf.random.truncated_normal(shape=(1,1),stddev=initializer_range,dtype=tf.float32)
@@ -736,7 +736,7 @@ def attention_layer(from_tensor,
       activation=value_act,
       name="value",
       #kernel_initializer=initialier_num)
-      kernel_initializer=np.random.normal(initializer_range))
+      kernel_initializer='glorot_uniform')
   value_tensor=value_layer(to_tensor_2d)
 
   # `query_layer` = [B, N, F, H]
@@ -915,7 +915,7 @@ def transformer_model(input_tensor,
               #attention_output)
               units=hidden_size,
               #kernel_initializer=initialier_num)
-              kernel_initializer=np.random.normal(initializer_range))
+              kernel_initializer='glorot_uniform')
           attention_output=att_layer(attention_output)
           attention_output = dropout(attention_output, hidden_dropout_prob)
           attention_output = layer_norm(attention_output + layer_input)
@@ -927,7 +927,7 @@ def transformer_model(input_tensor,
             units=intermediate_size,
             activation=intermediate_act_fn,
             #kernel_initializer=initialier_num)
-            kernel_initializer=np.random.normal(initializer_range))
+            kernel_initializer='glorot_uniform')
         intermediate_output=intermediate_layer(attention_output)
         
 
@@ -937,7 +937,7 @@ def transformer_model(input_tensor,
             #intermediate_output,
             units=hidden_size,
             #kernel_initializer=initialier_num)
-            kernel_initializer=np.random.normal(initializer_range))
+            kernel_initializer='glorot_uniform')
         layer_output=layer_layer(intermediate_output)
         layer_output = dropout(layer_output, hidden_dropout_prob)
         layer_output = layer_norm(layer_output + attention_output)
