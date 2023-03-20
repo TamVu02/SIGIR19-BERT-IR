@@ -381,7 +381,8 @@ def layer_norm_and_dropout(input_tensor, dropout_prob, name=None):
 
 def create_initializer(shape=(),initializer_range=0.02):
   """Creates a `truncated_normal_initializer` with the given range."""
-  result=tf.random.truncated_normal(shape,stddev=initializer_range,dtype=tf.float32).numpy()
+  with tf.init_scope():
+    result=tf.random.truncated_normal(shape,stddev=initializer_range,dtype=tf.float32).numpy()
   return result
 
 
