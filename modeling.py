@@ -382,15 +382,16 @@ def layer_norm_and_dropout(input_tensor, dropout_prob, name=None):
 
 def create_initializer(shape=(),initializer_range=0.02):
   """Creates a `truncated_normal_initializer` with the given range."""
-  sess = tf.compat.v1.Session()
-  result=tf.random.truncated_normal(shape,stddev=initializer_range,dtype=tf.float32)
-  result_np = sess.run(result)
-  sess.close()
+  result=np.random.normal(0, initializer_range, size=shape)
+#   sess = tf.compat.v1.Session()
+#   result=tf.random.truncated_normal(shape,stddev=initializer_range,dtype=tf.float32)
+#   result_np = sess.run(result)
+#   sess.close()
 #   with tf.init_scope():
 #     print(tf.executing_eagerly())
 #     result=tf.random.truncated_normal(shape,stddev=initializer_range,dtype=tf.float32)
 #     result_np=result.numpy()
-  return result_np
+  return result
 
 
 def embedding_lookup(input_ids,
