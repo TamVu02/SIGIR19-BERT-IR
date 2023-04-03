@@ -960,7 +960,7 @@ def file_based_convert_examples_to_features(
     writer = tf.io.TFRecordWriter(output_file)
 
     for (ex_index, example) in enumerate(examples):
-        if ex_index % 2 == 0:
+        if ex_index % 5000 == 0:
             tf.compat.v1.logging.info("Writing example %d of %d" % (ex_index, len(examples)))
 
         feature = convert_single_example(ex_index, example, label_list,
