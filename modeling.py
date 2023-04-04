@@ -231,6 +231,7 @@ class BertModel(object):
         #initialier_num=tf.random.truncated_normal(shapeshape=(1,1),stddev=config.initializer_range,dtype=tf.float32)
         pooled_layer = tf.keras.layers.Dense(
             #first_token_tensor,
+            name='dense',
             units=config.hidden_size,
             activation=tf.tanh)
             #kernel_initializer=create_initializer(initializer_range=config.initializer_range,shape=(config.hidden_size))
