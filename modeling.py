@@ -370,7 +370,7 @@ def dropout(input_tensor, dropout_prob):
 
 def layer_norm(input_tensor, name=None):
   """Run layer normalization on the last dimension of the tensor."""
-  layer_norma = tf.keras.layers.LayerNormalization(axis = -1)
+  layer_norma = tf.keras.layers.LayerNormalization(axis = -1,name='LayerNorm')
   return layer_norma(input_tensor)
 
 
@@ -913,6 +913,7 @@ def transformer_model(input_tensor,
         with tf.compat.v1.variable_scope("output"):
           att_layer = tf.keras.layers.Dense(
               #attention_output)
+              name='dense',
               units=hidden_size)
               #kernel_initializer=initialier_num)
               #kernel_initializer='glorot_uniform')
@@ -924,6 +925,7 @@ def transformer_model(input_tensor,
       with tf.compat.v1.variable_scope("intermediate"):
         intermediate_layer = tf.keras.layers.Dense(
             #attention_output,
+            name='dense',
             units=intermediate_size,
             activation=intermediate_act_fn)
             #kernel_initializer=initialier_num)
@@ -935,6 +937,7 @@ def transformer_model(input_tensor,
       with tf.compat.v1.variable_scope("output"):
         layer_layer = tf.keras.layers.Dense(
             #intermediate_output,
+            name='dense'
             units=hidden_size)
             #kernel_initializer=initialier_num)
             #kernel_initializer='glorot_uniform')
