@@ -763,7 +763,7 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
             (assignment_map, initialized_variable_names
              ) = modeling.get_assignment_map_from_checkpoint(tvars, init_checkpoint)
             if use_tpu:
-                print(tf.train.list_variables(init_checkpoint))
+                #print(tf.train.list_variables(init_checkpoint))
 
                 def tpu_scaffold():
                     tf.compat.v1.train.init_from_checkpoint(init_checkpoint, assignment_map)
@@ -783,7 +783,7 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
 
         output_spec = None
         if mode == tf.estimator.ModeKeys.TRAIN:
-            global_step = tf.compat.v1.train.get_or_create_global_step()
+            #global_step = tf.compat.v1.train.get_or_create_global_step()
 #             init_lr=learning_rate
 #             if num_warmup_steps:
 #                 global_steps_int = tf.cast(global_step, tf.int32)
