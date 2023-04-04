@@ -232,9 +232,9 @@ class BertModel(object):
         pooled_layer = tf.keras.layers.Dense(
             #first_token_tensor,
             units=config.hidden_size,
-            activation=tf.tanh,
-            #kernel_initializer=initialier_num)
-            kernel_initializer='glorot_uniform')
+            activation=tf.tanh)
+            #kernel_initializer=create_initializer(initializer_range=config.initializer_range,shape=(config.hidden_size))
+            #kernel_initializer='glorot_uniform')
         self.pooled_output=pooled_layer(first_token_tensor)
 
   def get_pooled_output(self):
@@ -711,9 +711,9 @@ def attention_layer(from_tensor,
       #units=from_seq_length,
       units=num_attention_heads * size_per_head,
       activation=query_act,
-      name="query",
+      name="query")
       #kernel_initializer=initialier_num)
-      kernel_initializer='glorot_uniform')
+      #kernel_initializer='glorot_uniform')
   query_tensor=query_layer(from_tensor_2d)
   #print(query_tensor.shape)
 
@@ -723,9 +723,9 @@ def attention_layer(from_tensor,
       #units=from_seq_length,
       units=num_attention_heads * size_per_head,
       activation=key_act,
-      name="key",
+      name="key")
       #kernel_initializer=initialier_num)
-      kernel_initializer='glorot_uniform')
+      #kernel_initializer='glorot_uniform')
   key_tensor=key_layer(to_tensor_2d)
 
   #initialier_num=tf.random.truncated_normal(shape=(1,1),stddev=initializer_range,dtype=tf.float32)
@@ -734,9 +734,9 @@ def attention_layer(from_tensor,
       #units=from_seq_length,
       units=num_attention_heads * size_per_head,
       activation=value_act,
-      name="value",
+      name="value")
       #kernel_initializer=initialier_num)
-      kernel_initializer='glorot_uniform')
+      #kernel_initializer='glorot_uniform')
   value_tensor=value_layer(to_tensor_2d)
 
   # `query_layer` = [B, N, F, H]
@@ -913,9 +913,9 @@ def transformer_model(input_tensor,
         with tf.compat.v1.variable_scope("output"):
           att_layer = tf.keras.layers.Dense(
               #attention_output)
-              units=hidden_size,
+              units=hidden_size)
               #kernel_initializer=initialier_num)
-              kernel_initializer='glorot_uniform')
+              #kernel_initializer='glorot_uniform')
           attention_output=att_layer(attention_output)
           attention_output = dropout(attention_output, hidden_dropout_prob)
           attention_output = layer_norm(attention_output + layer_input)
@@ -925,9 +925,9 @@ def transformer_model(input_tensor,
         intermediate_layer = tf.keras.layers.Dense(
             #attention_output,
             units=intermediate_size,
-            activation=intermediate_act_fn,
+            activation=intermediate_act_fn)
             #kernel_initializer=initialier_num)
-            kernel_initializer='glorot_uniform')
+            #kernel_initializer='glorot_uniform')
         intermediate_output=intermediate_layer(attention_output)
         
 
@@ -935,9 +935,9 @@ def transformer_model(input_tensor,
       with tf.compat.v1.variable_scope("output"):
         layer_layer = tf.keras.layers.Dense(
             #intermediate_output,
-            units=hidden_size,
+            units=hidden_size)
             #kernel_initializer=initialier_num)
-            kernel_initializer='glorot_uniform')
+            #kernel_initializer='glorot_uniform')
         layer_output=layer_layer(intermediate_output)
         layer_output = dropout(layer_output, hidden_dropout_prob)
         layer_output = layer_norm(layer_output + attention_output)
