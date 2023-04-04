@@ -938,7 +938,7 @@ def transformer_model(input_tensor,
       with tf.compat.v1.variable_scope("output"):
         layer_layer = tf.keras.layers.Dense(
             #intermediate_output,
-            name='dense'
+            name='dense',
             units=hidden_size)
             #kernel_initializer=initialier_num)
             #kernel_initializer='glorot_uniform')
