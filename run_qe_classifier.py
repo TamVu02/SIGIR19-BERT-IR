@@ -816,7 +816,7 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
                  mode=mode,
                  loss=total_loss,
                  train_op=train_op,
-                 scaffold_fn=scaffold_fn)
+                 scaffold=scaffold_fn)
 
 #             output_spec = tf.compat.v1.estimator.tpu.TPUEstimatorSpec(
 #                 mode=mode,
@@ -841,7 +841,7 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
                  mode=mode,
                  loss=total_loss,
                  eval_metrics=eval_metrics,
-                 scaffold_fn=scaffold_fn)
+                 scaffold=scaffold_fn)
 #             output_spec = tf.compat.v1.estimator.tpu.TPUEstimatorSpec(
 #                 mode=mode,
 #                 loss=total_loss,
@@ -851,7 +851,7 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
             output_spec = tf.estimator.EstimatorSpec(
                 mode=mode,
                 predictions={"probabilities": probabilities},
-                scaffold_fn=scaffold_fn)
+                scaffold=scaffold_fn)
 #             output_spec = tf.compat.v1.estimator.tpu.TPUEstimatorSpec(
 #                 mode=mode,
 #                 predictions={"probabilities": probabilities},
