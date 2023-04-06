@@ -812,12 +812,17 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
 #             train_op = tf.group(train_op, [global_step.assign(new_global_step)])
             train_op = optimization.create_optimizer(
                 total_loss, learning_rate, num_train_steps, num_warmup_steps, use_tpu)
+            output_spec = tf.estimator.EstimatorSpec(
+                 mode=mode,
+                 loss=total_loss,
+                 train_op=train_op,
+                 scaffold_fn=scaffold_fn)
 
-            output_spec = tf.compat.v1.estimator.tpu.TPUEstimatorSpec(
-                mode=mode,
-                loss=total_loss,
-                train_op=train_op,
-                scaffold_fn=scaffold_fn)
+#             output_spec = tf.compat.v1.estimator.tpu.TPUEstimatorSpec(
+#                 mode=mode,
+#                 loss=total_loss,
+#                 train_op=train_op,
+#                 scaffold_fn=scaffold_fn)
         elif mode == tf.estimator.ModeKeys.EVAL:
 
             def metric_fn(per_example_loss, label_ids, logits, is_real_example):
@@ -832,16 +837,25 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
 
             eval_metrics = (metric_fn,
                             [per_example_loss, label_ids, logits, is_real_example])
-            output_spec = tf.compat.v1.estimator.tpu.TPUEstimatorSpec(
-                mode=mode,
-                loss=total_loss,
-                eval_metrics=eval_metrics,
-                scaffold_fn=scaffold_fn)
+            output_spec = tf.estimator.EstimatorSpec(
+                 mode=mode,
+                 loss=total_loss,
+                 eval_metrics=eval_metrics,
+                 scaffold_fn=scaffold_fn)
+#             output_spec = tf.compat.v1.estimator.tpu.TPUEstimatorSpec(
+#                 mode=mode,
+#                 loss=total_loss,
+#                 eval_metrics=eval_metrics,
+#                 scaffold_fn=scaffold_fn)
         else:
-            output_spec = tf.compat.v1.estimator.tpu.TPUEstimatorSpec(
+            output_spec = tf.estimator.EstimatorSpec(
                 mode=mode,
                 predictions={"probabilities": probabilities},
                 scaffold_fn=scaffold_fn)
+#             output_spec = tf.compat.v1.estimator.tpu.TPUEstimatorSpec(
+#                 mode=mode,
+#                 predictions={"probabilities": probabilities},
+#                 scaffold_fn=scaffold_fn)
         return output_spec
 
     return model_fn
