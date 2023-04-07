@@ -487,7 +487,7 @@ def convert_single_example(ex_index, example, label_list, max_seq_length,
 
     if isinstance(example, PaddingInputExample):
         return InputFeatures(
-            guid=""
+            guid="",
             input_ids=[0] * max_seq_length,
             input_mask=[0] * max_seq_length,
             segment_ids=[0] * max_seq_length,
