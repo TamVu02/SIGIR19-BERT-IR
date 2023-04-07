@@ -633,7 +633,7 @@ def file_based_input_fn_builder(input_file, seq_length, is_training,
     """Creates an `input_fn` closure to be passed to TPUEstimator."""
 
     name_to_features = {
-        "guid" : tf.io.FixedLenFeature([], tf.string),
+        #"guid" : tf.io.FixedLenFeature([], tf.string),
         "input_ids": tf.io.FixedLenFeature([seq_length], tf.int64),
         "input_mask": tf.io.FixedLenFeature([seq_length], tf.int64),
         "segment_ids": tf.io.FixedLenFeature([seq_length], tf.int64),
@@ -754,7 +754,7 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
         for name in sorted(features.keys()):
             tf.compat.v1.logging.info("  name = %s, shape = %s" % (name, features[name].shape))
 
-        guid = features["guid"]
+        #guid = features["guid"]
         input_ids = features["input_ids"]
         input_mask = features["input_mask"]
         segment_ids = features["segment_ids"]
@@ -865,7 +865,7 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
             output_spec = tf.estimator.EstimatorSpec(
                 mode=mode,
                 predictions={"probabilities": probabilities,
-                            "guid": guid})
+                            "guid": features["guid"]})
                 #scaffold=scaffold_fn)
 #             output_spec = tf.compat.v1.estimator.tpu.TPUEssample_id': features['sample_id']timatorSpec(
 #                 mode=mode,
