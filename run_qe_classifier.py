@@ -620,8 +620,7 @@ def file_based_convert_examples_to_features(
         features["is_real_example"] = create_int_feature(
             [int(feature.is_real_example)])
         
-        feat_without_id = {k: {key: value for key, value in v.items() if key != 'guid'}
-                   for k, v in features.items()}
+        feat_without_id = {key: value for key, value in features.items() if key != 'guid'}
 
         tf_example = tf.train.Example(features=tf.train.Features(feature=feat_without_id))
         writer.write(tf_example.SerializeToString())
