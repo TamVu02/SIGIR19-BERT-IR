@@ -179,11 +179,13 @@ class InputFeatures(object):
     """A single set of features of data."""
 
     def __init__(self,
+                 guid,
                  input_ids,
                  input_mask,
                  segment_ids,
                  label_id,
                  is_real_example=True):
+        self.guid=guid
         self.input_ids = input_ids
         self.input_mask = input_mask
         self.segment_ids = segment_ids
@@ -485,6 +487,7 @@ def convert_single_example(ex_index, example, label_list, max_seq_length,
 
     if isinstance(example, PaddingInputExample):
         return InputFeatures(
+            guid=""
             input_ids=[0] * max_seq_length,
             input_mask=[0] * max_seq_length,
             segment_ids=[0] * max_seq_length,
@@ -495,6 +498,8 @@ def convert_single_example(ex_index, example, label_list, max_seq_length,
     for (i, label) in enumerate(label_list):
         label_map[label] = i
 
+    guid=example.guid
+    
     tokens_a = []
     for text in example.text_a_list:
         tokens = tokenizer.tokenize(text)
@@ -579,6 +584,7 @@ def convert_single_example(ex_index, example, label_list, max_seq_length,
         tf.compat.v1.logging.info("label: %s (id = %d)" % (example.label, label_id))
 
     feature = InputFeatures(
+        guid=guid,
         input_ids=input_ids,
         input_mask=input_mask,
         segment_ids=segment_ids,
@@ -605,14 +611,19 @@ def file_based_convert_examples_to_features(
             return f
 
         features = collections.OrderedDict()
+        
+        features["guid"] = tf.train.Feature(bytes_list=tf.train.BytesList(value=[feature.guid.encode('utf-8')]))
         features["input_ids"] = create_int_feature(feature.input_ids)
         features["input_mask"] = create_int_feature(feature.input_mask)
         features["segment_ids"] = create_int_feature(feature.segment_ids)
         features["label_ids"] = create_int_feature([feature.label_id])
         features["is_real_example"] = create_int_feature(
             [int(feature.is_real_example)])
+        
+        feat_without_id = {k: {key: value for key, value in v.items() if key != 'guid'}
+                   for k, v in features.items()}
 
-        tf_example = tf.train.Example(features=tf.train.Features(feature=features))
+        tf_example = tf.train.Example(features=tf.train.Features(feature=feat_without_id))
         writer.write(tf_example.SerializeToString())
     writer.close()
 
@@ -741,6 +752,7 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
         for name in sorted(features.keys()):
             tf.compat.v1.logging.info("  name = %s, shape = %s" % (name, features[name].shape))
 
+        guid = features["guid"]
         input_ids = features["input_ids"]
         input_mask = features["input_mask"]
         segment_ids = features["segment_ids"]
@@ -851,7 +863,7 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
             output_spec = tf.estimator.EstimatorSpec(
                 mode=mode,
                 predictions={"probabilities": probabilities,
-                            "sample_id": features['sample_id']})
+                            "sample_id": features['guid']})
                 #scaffold=scaffold_fn)
 #             output_spec = tf.compat.v1.estimator.tpu.TPUEssample_id': features['sample_id']timatorSpec(
 #                 mode=mode,
