@@ -863,7 +863,7 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
             output_spec = tf.estimator.EstimatorSpec(
                 mode=mode,
                 predictions={"probabilities": probabilities,
-                            "sample_id": features['guid']})
+                            "sample_id": guid})
                 #scaffold=scaffold_fn)
 #             output_spec = tf.compat.v1.estimator.tpu.TPUEssample_id': features['sample_id']timatorSpec(
 #                 mode=mode,
