@@ -754,7 +754,7 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
         for name in sorted(features.keys()):
             tf.compat.v1.logging.info("  name = %s, shape = %s" % (name, features[name].shape))
 
-        #guid = features["guid"]
+        guid = features["guid"]
         input_ids = features["input_ids"]
         input_mask = features["input_mask"]
         segment_ids = features["segment_ids"]
@@ -865,7 +865,7 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
             output_spec = tf.estimator.EstimatorSpec(
                 mode=mode,
                 predictions={"probabilities": probabilities})
-                            #"sample_id": guid})
+                            "guid": guid})
                 #scaffold=scaffold_fn)
 #             output_spec = tf.compat.v1.estimator.tpu.TPUEssample_id': features['sample_id']timatorSpec(
 #                 mode=mode,
