@@ -633,13 +633,14 @@ def file_based_input_fn_builder(input_file, seq_length, is_training,
     """Creates an `input_fn` closure to be passed to TPUEstimator."""
 
     name_to_features = {
-        #"guid" : tf.io.FixedLenFeature([], tf.strings),
+        "guid" : tf.io.FixedLenFeature([], tf.strings),
         "input_ids": tf.io.FixedLenFeature([seq_length], tf.int64),
         "input_mask": tf.io.FixedLenFeature([seq_length], tf.int64),
         "segment_ids": tf.io.FixedLenFeature([seq_length], tf.int64),
         "label_ids": tf.io.FixedLenFeature([], tf.int64),
         "is_real_example": tf.io.FixedLenFeature([], tf.int64),
     }
+    #copy_name_to_feat={i:name_to_features[i] for i in name_to_features if i!='guid'}
 
     def _decode_record(record, name_to_features):
         """Decodes a record to a TensorFlow example."""
