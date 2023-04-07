@@ -620,7 +620,8 @@ def file_based_convert_examples_to_features(
         features["is_real_example"] = create_int_feature(
             [int(feature.is_real_example)])
         
-        feat_without_id = collections.OrderedDict({k:v for k,v in features.items() if k != 'guid'})
+        feat_without_id = collections.OrderedDict({key{k:v for k,v in value.items() if k != 'guid'}
+                                                 key:value for key,value in features.item()})
 
         tf_example = tf.train.Example(features=tf.train.Features(feature=feat_without_id))
         writer.write(tf_example.SerializeToString())
